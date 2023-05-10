@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/carts")
+@RequestMapping("/api/carts")
 public class CartsController {
     private final CartService service;
 
@@ -36,7 +36,7 @@ public class CartsController {
 
 
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public UpdateCartResponse update(@PathVariable  Long id, @RequestBody UpdateCartRequest request){
         return  service.updateCart(id, request);
     }
@@ -45,7 +45,7 @@ public class CartsController {
     public GetCartResponse addtoCart(@RequestBody CreateCartItemRequest cartItem) {
         return service.addtoCart(cartItem);
     }
-    @PutMapping("empty-card/{cartId}")
+    @PutMapping("/empty-card/{cartId}")
     public void emptyCart(@PathVariable Long cartId) {
         service.emptyCart(cartId);
     }
@@ -54,10 +54,15 @@ public class CartsController {
         return service.deleteItemFromCart(cartId, cartItemId);
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(Long id){
+    public void delete(@PathVariable Long id){
         service.delete(id);
+    }
+    @DeleteMapping("/delete-all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(){
+        service.deleteAll();
     }
 
 }

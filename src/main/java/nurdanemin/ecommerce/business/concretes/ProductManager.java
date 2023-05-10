@@ -1,6 +1,7 @@
 package nurdanemin.ecommerce.business.concretes;
 
 import lombok.AllArgsConstructor;
+import nurdanemin.ecommerce.business.abstracts.BrandService;
 import nurdanemin.ecommerce.business.abstracts.CategoryService;
 import nurdanemin.ecommerce.business.abstracts.ProductService;
 import nurdanemin.ecommerce.business.dto.request.create.product.CreateProductRequest;
@@ -30,6 +31,7 @@ public class ProductManager  implements ProductService {
     private final ModelMapper mapper;
     private final CategoryRepository categoryRepository;
     private final ProductRules rules;
+    private final BrandService brandService;
 
     @Override
     public List<GetAllProductsResponse> getAll() {
@@ -46,7 +48,6 @@ public class ProductManager  implements ProductService {
         rules.checkIfProductExistsById(id);
         GetProductResponse response =  mapper.map(repository.findById(id), GetProductResponse.class);
         return response;
-
     }
 
     public List<GetAllProductsResponse> getAllByCategoryName(String categoryName) {
@@ -81,19 +82,28 @@ public class ProductManager  implements ProductService {
 
     }
 
+    @Override
+    public Product getProductbyId(Long id) {
+        Product product = repository.findById(id).orElseThrow();
+        return product;
+    }
+
 
     @Override
     public CreateProductResponse createProduct(CreateProductRequest request) {
         rules.checkIfProductExistsInBrand(request.getName(), request.getBrandId());
         Product product = mapper.map(request, Product.class);
-        product.setCategories(new HashSet<>());
+        product.setBrand(brandService.getBrandById(request.getBrandId()));
+        product.setCategories(new ArrayList<>());
         if(request.getCategoryNames().size() !=0){
            setCategories(product, request.getCategoryNames());
        }
        product.setId(0L);
        Product createdProd = repository.save(product);
        CreateProductResponse response = mapper.map(createdProd, CreateProductResponse.class);
-       response.setCategoryNames(request.getCategoryNames());
+       response.setCategoryNames(mapProductCategoriesAsNamesList(createdProd));
+       response.setBrandName(createdProd.getBrand().getName());
+
        return response;
     }
 
@@ -117,7 +127,7 @@ public class ProductManager  implements ProductService {
     }
 
     public Product  setCategories(Product product, Set<String> categoryNames){
-        Set<Category> productCategories = product.getCategories();
+        List<Category> productCategories = product.getCategories();
         for (String categoryName:categoryNames){
             Category category = categoryRepository.findByNameIgnoreCase(categoryName);
             productCategories.add(category);
@@ -130,4 +140,19 @@ public class ProductManager  implements ProductService {
         product.setQuantity(product.getQuantity() + change);
         repository.save(product);
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
+
+    public List<String> mapProductCategoriesAsNamesList(Product product){
+        List<String> categoryNames = new ArrayList<>();
+        for (Category category: product.getCategories()){
+            categoryNames.add(category.getName());
+        }
+        return categoryNames;
+    }
+
+
 }

@@ -16,6 +16,7 @@ import java.util.List;
 public interface UserService {
     List<GetAllUsersResponse> getAll();
     GetUserResponse getById(Long id);
+    User getUserById(Long id);
 
     CreateUserResponse createUser(CreateUserRequest request);
     UpdateUserResponse updateUser(Long id, UpdateUserRequest request);
@@ -23,6 +24,10 @@ public interface UserService {
 
     GetUserResponse addAddresstoUser(Long userId, CreateAddressRequest addressRequest);
 
-    User  findByCartId(Long cartId);
+    void deleteAll();
+
+    void deleteAdressForUser(Long addressId, Long userId);
+
+
 
 }

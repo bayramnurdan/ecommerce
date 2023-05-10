@@ -17,12 +17,16 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long productId;
-
-    private Long orderId;
     private double price;
     private int quantity;
     private double discount;
-    private double totalPrice;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
 }

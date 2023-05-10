@@ -17,7 +17,7 @@ public class GetProductResponse {
     private String name;
 
 
-    private Long brandId;
+    private String brandName;
     //private Set<Long> categoryIds;
 
     private Long quantity;

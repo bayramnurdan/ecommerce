@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 public class GetAllAddressesResponse {
     private Long id;
+    private int apartmentNumber;
     private String building;
     private String street;
     private String district;

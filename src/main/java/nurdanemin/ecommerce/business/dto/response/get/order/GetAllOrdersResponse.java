@@ -15,14 +15,9 @@ import java.util.Set;
 public class GetAllOrdersResponse {
     private Long id;
     private Long userId;
-
-
-    @ElementCollection
-    private Set<Long> orderItems;
-
     private double totalAmount;
     private double orderDiscount;
-
-
     private Long paymentId;
+    private Long shippingId;
+    private Long invoiceId;
 }

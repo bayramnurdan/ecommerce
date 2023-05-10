@@ -18,4 +18,5 @@ public class CreateCartItemRequest {
     private int quantity;
     private double discount;
 
+
 }

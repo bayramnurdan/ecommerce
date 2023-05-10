@@ -23,11 +23,14 @@ public class Invoice {
     private String customerFirstName;
     private String customerLastName;
 
-    @ElementCollection
-    private HashMap<String, String> productsBought;
+    private LocalDateTime OrderedAt;
     private double totalAmount;
     private String cardHolder;
-    private LocalDateTime orderedAt;
+
+    @OneToOne(mappedBy = "invoice")
+    private Order order;
+
+
 
 
 

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -22,5 +23,5 @@ public class Category {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    private Set<Product> products;
+    private List<Product> products;
 }

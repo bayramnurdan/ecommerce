@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nurdanemin.ecommerce.entities.Category;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -17,9 +18,9 @@ public class CreateProductResponse {
     private Long id;
 
 
-    private Long brandId;
+    private String brandName;
 
-    private Set<String> categoryNames;
+    private List<String> categoryNames;
 
     private Long quantity;
     private double price;

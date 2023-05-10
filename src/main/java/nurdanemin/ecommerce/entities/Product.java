@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -25,15 +27,19 @@ public class Product {
     private Brand brand;
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "Product_Categories",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories;
 
     private Long quantity;
     private double price;
     private double discount;
     private double specialPrice;
+
+    @ManyToMany
+    @JoinColumn(name = "category_id")
+    private List<Category> categories;
+
+    @OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+    private List<CartItem> products = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<OrderItem> orderItems = new ArrayList<>();
 }

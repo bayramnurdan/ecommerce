@@ -26,6 +26,7 @@ public class AddressManager implements AddressService {
     private final AddressRepository repository;
     private final ModelMapper mapper;
     private final AddressRules rules;
+
     @Override
     public List<GetAllAddressesResponse> getAll() {
         List<Address> addresses = repository.findAll();
@@ -45,26 +46,39 @@ public class AddressManager implements AddressService {
     }
 
     @Override
-    public CreateAddressResponse createAddress(CreateAddressRequest request) {
-        rules.checkIfAddressExists(request.getBuilding(), request.getStreet(),
-                request.getDistrict(), request.getCity(), request.getCountry());
-
-        Address address = mapper.map(request, Address.class);
-        address.setId(0L);
-        Address createdAddres = repository.save(address);
-        return mapper.map(createdAddres, CreateAddressResponse.class);
+    public Address getAddressById(Long id) {
+        Address address = repository.findById(id).orElseThrow();
+        return address;
     }
-
-
 
     @Override
-    public UpdateAddressResponse updateAddress(Long id, UpdateAddressRequest request) {
-        rules.checkIfExistsById(id);
-        Address address = mapper.map(request, Address.class);
-        address.setId(id);
-        Address createdAddres = repository.save(address);
-        return mapper.map(createdAddres, UpdateAddressResponse.class);
+    public Address createAddress(CreateAddressRequest request) {
+        if (rules.checkIfAddressExists(request.getApartmentNumber(), request.getBuilding(), request.getStreet(),
+                request.getDistrict(), request.getCity(), request.getCountry())){
+            Address address= repository.findByApartmentNumberAndBuildingAndStreetAndDistrictAndCityAndCountry(
+                    request.getApartmentNumber(), request.getBuilding(), request.getStreet(),
+                    request.getDistrict(), request.getCity(), request.getCountry());
+            return address;
+        }else {
+
+            Address address = mapper.map(request, Address.class);
+            address.setUsers(new ArrayList<>());
+            Address createdAddres = repository.save(address);
+            return createdAddres;
+        }
     }
+    @Override
+    public void addUserForAddress(Address address, User user) {
+        List<User> ownersOfAddress  =address.getUsers();
+        ownersOfAddress.add(user);
+        address.setUsers(ownersOfAddress);
+        repository.save(address);
+
+    }
+
+
+
+
 
 
     @Override
@@ -73,6 +87,9 @@ public class AddressManager implements AddressService {
         repository.deleteById(id);
 
     }
+
+
+
 
 
 

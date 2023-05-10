@@ -19,8 +19,8 @@ import java.util.List;
 public interface CartService {
     List<GetAllCartsResponse> getAll();
     GetCartResponse getById(Long id);
+    Cart getCartById(Long id);
 
-    Cart createCartForUser(Long userId);
     UpdateCartResponse updateCart(Long id, UpdateCartRequest request);
     void delete(Long id);
     void emptyCart(Long id);
@@ -29,7 +29,6 @@ public interface CartService {
 
     GetCartResponse deleteItemFromCart(Long cartId, Long cartItemId);
     GetCartResponse updateItemQuantity(Long cartItemId);
-
-
-   // TODO add add delete product and change quantity functions
+    void deleteAll();
+    public void setCartTotalPrice(Cart cart);
 }

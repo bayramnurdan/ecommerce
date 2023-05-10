@@ -53,9 +53,15 @@ public class ProductsController {
         return  service.updateProduct(id, request);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(Long id){
+    public void delete(@PathVariable  Long id){
         service.delete(id);
+    }
+
+    @DeleteMapping("/delete-all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(){
+        service.deleteAll();
     }
 }

@@ -33,12 +33,19 @@ public class PaymentManager implements PaymentService {
     }
 
     @Override
-    public CreatePaymentResponse createPayment(CreatePaymentRequest request) {
+    public Payment createPayment(CreatePaymentRequest request) {
         Payment payment = mapper.map(request, Payment.class);
         payment.setStatus(PaymentStatus.FAILED);
-        repository.save(payment);
-        return mapper.map(payment, CreatePaymentResponse.class);
+        Payment paymentCreated = repository.save(payment);
+        return paymentCreated;
 
+    }
+    public void processPayment(Payment payment){
+        //TODO : Check if balance is enough.
+        double newBalance = payment.getBalance()-payment.getOrder().getTotalAmount();
+        payment.setBalance(newBalance);
+        payment.setStatus(PaymentStatus.SUCCESS);
+        repository.save(payment);
     }
 
     @Override
@@ -49,19 +56,15 @@ public class PaymentManager implements PaymentService {
 
 
 
-
     @Override
     public void delete(Long id) {
         repository.deleteById(id);
 
     }
 
-    @Override
-    public void processPayment(Long paymentId, double amount) {
-        Payment payment = repository.findById(paymentId).orElseThrow();
-        payment.setBalance(payment.getBalance()-amount);
-        payment.setStatus(PaymentStatus.SUCCESS);
-        repository.save(payment);
 
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

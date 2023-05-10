@@ -14,15 +14,20 @@ import lombok.Setter;
 @Table(name="CartItems")
 public class CartItem {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long productId;
 
-    private Long cartId;
     private double price;
     private int quantity;
     private double discount;
-    private double totalPrice;
+
+    @ManyToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
 
 }

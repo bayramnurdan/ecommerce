@@ -10,6 +10,7 @@ import lombok.Setter;
 import nurdanemin.ecommerce.entities.CartItem;
 import nurdanemin.ecommerce.entities.User;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +24,5 @@ public class GetAllCartsResponse {
 
     private Long userId;
     private double totalPrice;
-    @ElementCollection
-    Set<Long> cartItems = new HashSet<>();
+    //List<String> productNames ; streamda bir şeyler yapmalı
 }

@@ -6,10 +6,10 @@ import nurdanemin.ecommerce.business.dto.request.update.invoice.UpdateInvoiceReq
 import nurdanemin.ecommerce.business.dto.response.create.invoice.CreateInvoiceResponse;
 import nurdanemin.ecommerce.business.dto.response.get.GetAllInvoicesResponse;
 import nurdanemin.ecommerce.business.dto.response.get.GetInvoiceResponse;
-import nurdanemin.ecommerce.business.dto.response.get.orderItem.GetOrderItemResponse;
 import nurdanemin.ecommerce.business.dto.response.update.invoice.UpdateInvoiceResponse;
 import nurdanemin.ecommerce.entities.Invoice;
 import nurdanemin.ecommerce.entities.Order;
+import nurdanemin.ecommerce.entities.OrderItem;
 import nurdanemin.ecommerce.repositories.InvoiceRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -20,44 +20,36 @@ import java.util.List;
 @AllArgsConstructor
 public class InvoiceManager implements InvoiceService {
     private final InvoiceRepository repository;
-    private final UserService userService;
-    private final PaymentService paymentService;
-    private final ProductService productService;
-    private final OrderItemService orderItemService;
     private final ModelMapper mapper;
     @Override
     public List<GetAllInvoicesResponse> getAll() {
-        return null;
+       List<Invoice> invoices = repository.findAll();
+       List<GetAllInvoicesResponse> response = invoices
+               .stream()
+               .map(invoice -> mapper.map(invoice, GetAllInvoicesResponse.class))
+               .toList();
+       return response;
     }
 
     @Override
     public GetInvoiceResponse getById(Long id) {
-        return null;
+        Invoice invoice = repository.findById(id).orElseThrow();
+        GetInvoiceResponse response = mapper.map(invoice, GetInvoiceResponse.class);
+        return response;
+
     }
 
     @Override
-    public CreateInvoiceResponse createInvoice(Order order ) {
-
-        Invoice invoice = new Invoice();
-        invoice.setCustomerFirstName(userService.getById(order.getUserId()).getFirstName());
-        invoice.setCustomerLastName(userService.getById(order.getUserId()).getLastName());
-        invoice.setOrderedAt(order.getOrderedAt());
-        invoice.setTotalAmount(order.getTotalAmount());
-        invoice.setCardHolder(paymentService.getById(order.getPaymentId()).getCardHolder());
-        HashMap<String, String > productsPurchased = new HashMap<>();
-
-        for (Long orderItemId: order.getOrderItems()){
-            GetOrderItemResponse orderItem = orderItemService.getById(orderItemId);
-            Long productId =orderItem.getProductId(); // SORUN  BURDA
-            int quantity = orderItem.getQuantity();
-            double price = orderItem.getPrice();
-            productsPurchased.put(productService.getById(productId).getName(),
-                    "Integer.toString(quantity) * Double.toString(price)" );
-
-        }
-        repository.save(invoice);
-        CreateInvoiceResponse response = mapper.map(invoice, CreateInvoiceResponse.class);
-        return response;
+    public Invoice createInvoice(Order order ) {
+     Invoice invoice = new Invoice();
+     invoice.setCustomerFirstName(order.getUser().getFirstName());
+     invoice.setCustomerLastName(order.getUser().getLastName());
+     invoice.setOrderedAt(order.getOrderedAt());
+     invoice.setTotalAmount(order.getTotalAmount());
+     invoice.setCardHolder(order.getPayment().getCardHolder());
+     invoice.setOrder(order);
+     Invoice invoiceCreated = repository.save(invoice);
+     return invoiceCreated;
 
     }
 
@@ -68,6 +60,13 @@ public class InvoiceManager implements InvoiceService {
 
     @Override
     public void delete(Long id) {
+        repository.deleteById(id);
 
+
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

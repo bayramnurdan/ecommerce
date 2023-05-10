@@ -8,17 +8,19 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class AddressRules {
     private final AddressRepository repository;
-    public void checkIfAddressExists(String building, String street, String district, String city, String country){
-        if (repository.existsByBuildingAndStreetAndDistrictAndCityAndCountry(building,
+    public boolean checkIfAddressExists(int apartment, String building, String street, String district, String city, String country){
+        if (repository.existsByApartmentNumberAndBuildingAndStreetAndDistrictAndCityAndCountry(apartment, building,
                 street, district, city, country)){
-            throw new RuntimeException("ADDRESS_ALREADY_EXISTS");
+            return true;
         }
+        return false;
 
     }
 
+
     public void checkIfExistsById(Long id){
         if (!repository.existsById(id)){
-            throw new RuntimeException("ADDRES_NOT_EXISTS");
+            throw new RuntimeException("ADDRESS_NOT_EXISTS");
         }
     }
 

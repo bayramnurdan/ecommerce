@@ -20,12 +20,15 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private int apartmentNumber;
     private String building;
     private String street;
     private String district;
     private String city;
     private String country;
+
+    @ManyToMany(mappedBy = "addresses")
+    private List<User> users = new ArrayList<>();
 
 
 

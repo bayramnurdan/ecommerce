@@ -3,6 +3,7 @@ package nurdanemin.ecommerce.business.dto.request.create.order;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class CreateOrderRequest {
+    @Min(1)
     Long cartId;
     CreatePaymentRequest paymentRequest;
     CreateShippingRequest shippingRequest;

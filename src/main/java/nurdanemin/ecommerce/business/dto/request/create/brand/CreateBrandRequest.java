@@ -1,6 +1,7 @@
 package nurdanemin.ecommerce.business.dto.request.create.brand;
 
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class CreateBrandRequest {
+    @NotBlank
     private String name;
 
 }

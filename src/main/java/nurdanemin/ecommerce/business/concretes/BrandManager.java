@@ -39,6 +39,12 @@ public class BrandManager implements BrandService {
     }
 
     @Override
+    public Brand getBrandById(Long id) {
+        Brand brand = repository.findById(id).orElseThrow();
+        return brand;
+    }
+
+    @Override
     public CreateBrandResponse createBrand(CreateBrandRequest request) {
         rules.checkIfBrandAlreadyExists(request.getName());
         Brand brand = mapper.map(request, Brand.class);
@@ -65,5 +71,10 @@ public class BrandManager implements BrandService {
         rules.checkIfBrandExistsById(id);
         repository.deleteById(id);
 
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

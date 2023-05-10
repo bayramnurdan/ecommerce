@@ -16,8 +16,9 @@ import java.util.List;
 
 public interface OrderItemService {
     List<GetAllOrderItemsResponse> getAll();
-    GetOrderItemResponse getById(Long id);
+    OrderItem getById(Long id);
     OrderItem createOrderItem(CartItem request);
     UpdateOrderItemResponse updateOrderItem(Long id, UpdateOrderItemRequest request);
     void delete(Long id);
+    void deleteAll();
 }

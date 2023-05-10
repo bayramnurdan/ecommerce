@@ -25,4 +25,7 @@ public class Payment {
     private String cardCvv;
     private double balance;
     private PaymentStatus status;
+
+    @OneToOne(mappedBy = "payment", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private Order order;
 }

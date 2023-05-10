@@ -1,5 +1,7 @@
 package nurdanemin.ecommerce.business.dto.request.create.user;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +14,11 @@ import nurdanemin.ecommerce.entities.Address;
 @Getter
 @Setter
 public class CreateUserRequest {
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @Email
     private String email;
 
     private CreateAddressRequest address;

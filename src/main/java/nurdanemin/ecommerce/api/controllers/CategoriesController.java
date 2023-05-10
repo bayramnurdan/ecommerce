@@ -48,4 +48,9 @@ public class CategoriesController {
     public void delete(Long id){
         service.delete(id);
     }
+    @DeleteMapping("/delete-all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(){
+        service.deleteAll();
+    }
 }

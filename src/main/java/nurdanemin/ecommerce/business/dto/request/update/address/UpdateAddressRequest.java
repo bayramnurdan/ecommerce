@@ -12,10 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 public class UpdateAddressRequest {
+    private int apartmentNumber;
     private String building;
     private String street;
     private String district;
     private String city;
     private String country;
-    private List<Long> ownerIds;
 }

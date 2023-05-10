@@ -28,20 +28,21 @@ public class OrderItemManager implements OrderItemService {
     }
 
     @Override
-    public GetOrderItemResponse getById(Long id) {
-        return null;
+    public OrderItem getById(Long id) {
+        return repository.findById(id).orElseThrow();
+
     }
 
     @Override
     public OrderItem createOrderItem(CartItem request) {
         OrderItem orderItem = new OrderItem();
-        orderItem.setProductId(request.getProductId());
+        //orderItem.setProduct(request.getProductId());
         // TODO : implement a method to set order Id
         //orderItem.setOrderId(request.getOrderId());
         orderItem.setPrice(request.getPrice());
         orderItem.setQuantity(request.getQuantity());
         orderItem.setDiscount(request.getDiscount());
-        orderItem.setTotalPrice(request.getTotalPrice());
+
         orderItem.setDiscount(request.getDiscount());
         repository.save(orderItem);
         return orderItem;
@@ -57,5 +58,10 @@ public class OrderItemManager implements OrderItemService {
     public void delete(Long id) {
         repository.deleteById(id);
 
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

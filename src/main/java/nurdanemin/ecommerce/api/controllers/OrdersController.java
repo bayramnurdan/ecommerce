@@ -32,6 +32,10 @@ public class OrdersController {
         return service.getById(id);
 
     }
+    @GetMapping("get-all-orders-of/{userId}")
+    public List<GetAllOrdersResponse> getAllOrderdsOfUser(@PathVariable Long userId) {
+        return service.getAllOrdersOfUser(userId);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -48,5 +52,11 @@ public class OrdersController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable  Long id){
         service.delete(id);
+    }
+
+    @DeleteMapping("/delete-all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(){
+        service.deleteAll();
     }
 }

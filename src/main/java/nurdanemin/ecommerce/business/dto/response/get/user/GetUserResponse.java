@@ -7,6 +7,7 @@ import lombok.Setter;
 import nurdanemin.ecommerce.entities.Address;
 import nurdanemin.ecommerce.entities.Cart;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -20,8 +21,7 @@ public class GetUserResponse {
     private String lastName;
     private String email;
 
-    // TODO : addressIds direkt mapleyemiyor
-    private Set<Long> addresIds;
+    private List<Long> addressIds;
     private Long cartId;
 
 }

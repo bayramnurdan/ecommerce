@@ -53,6 +53,7 @@ public class CategoryManager  implements CategoryService {
     public UpdateCategoryResponse updateCategory(Long id, UpdateCategoryRequest request) {
         rules.checkIfCategoryExistsById(id);
         Category category = mapper.map(request, Category.class);
+        category.setId(id);
         Category updatedCategory = repository.save(category);
         UpdateCategoryResponse response = mapper.map(updatedCategory, UpdateCategoryResponse.class);
         return response;
@@ -63,6 +64,11 @@ public class CategoryManager  implements CategoryService {
     public void delete(Long id) {
         rules.checkIfCategoryExistsById(id);
         repository.deleteById(id);
+    }
 
+    @Override
+    public void deleteAll() {
+
+        repository.deleteAll();
     }
 }

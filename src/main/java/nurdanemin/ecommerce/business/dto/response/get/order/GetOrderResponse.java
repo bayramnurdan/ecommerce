@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -18,11 +20,13 @@ public class GetOrderResponse {
 
 
     @ElementCollection
-    private Set<Long> orderItems;
+    private List<Long> orderItemIds = new ArrayList<>();
 
     private double totalAmount;
     private double orderDiscount;
 
 
     private Long paymentId;
+    private Long shippingId;
+    private Long invoiceId;
 }

@@ -8,6 +8,8 @@ import nurdanemin.ecommerce.business.dto.request.create.orderItem.CreateOrderIte
 import nurdanemin.ecommerce.business.dto.request.create.payment.CreatePaymentRequest;
 import nurdanemin.ecommerce.business.dto.request.create.shipping.CreateShippingRequest;
 import nurdanemin.ecommerce.business.dto.request.update.order.UpdateOrderRequest;
+import nurdanemin.ecommerce.business.dto.request.update.payment.UpdatePaymentRequest;
+import nurdanemin.ecommerce.business.dto.request.update.shipping.UpdateShippingRequest;
 import nurdanemin.ecommerce.business.dto.response.create.cartItem.CreateCartItemResponse;
 import nurdanemin.ecommerce.business.dto.response.create.order.CreateOrderResponse;
 import nurdanemin.ecommerce.business.dto.response.create.payment.CreatePaymentResponse;
@@ -16,16 +18,17 @@ import nurdanemin.ecommerce.business.dto.response.get.cartItem.GetCartItemRespon
 import nurdanemin.ecommerce.business.dto.response.get.order.GetAllOrdersResponse;
 import nurdanemin.ecommerce.business.dto.response.get.order.GetOrderResponse;
 import nurdanemin.ecommerce.business.dto.response.update.order.UpdateOrderResponse;
-import nurdanemin.ecommerce.entities.Cart;
-import nurdanemin.ecommerce.entities.CartItem;
-import nurdanemin.ecommerce.entities.Order;
-import nurdanemin.ecommerce.entities.OrderItem;
+import nurdanemin.ecommerce.entities.*;
+import nurdanemin.ecommerce.entities.enums.PaymentStatus;
+import nurdanemin.ecommerce.repositories.CartItemRepository;
+import nurdanemin.ecommerce.repositories.OrderItemRepository;
 import nurdanemin.ecommerce.repositories.OrderRepository;
 import org.aspectj.weaver.ast.Or;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,14 +38,14 @@ import java.util.Set;
 public class OrderManager implements OrderService {
     private final OrderRepository repository;
     private final ModelMapper mapper;
-    private final UserService userService;
     private final CartService cartService;
-    private final CartItemService cartItemService;
-    private final OrderItemService orderItemService;
     private final PaymentService paymentService;
-    private  final ShippingService shippingService;
-    private final ProductService productService;
+    private final ShippingService shippingService;
     private final InvoiceService invoiceService;
+    private final OrderItemRepository orderItemRepository;
+    private final CartItemRepository cartItemRepository;
+    private final ProductService productService;
+
     @Override
     public List<GetAllOrdersResponse> getAll() {
         List<Order> orders= repository.findAll();
@@ -56,7 +59,9 @@ public class OrderManager implements OrderService {
     @Override
     public GetOrderResponse getById(Long id) {
         Order order = repository.findById(id).orElseThrow();
-        return mapper.map(order, GetOrderResponse.class);
+        GetOrderResponse response = mapper.map(order, GetOrderResponse.class);
+        response.setOrderItemIds(getOrderItemIdsAsList(order));
+        return response;
     }
 
     @Override
@@ -66,41 +71,61 @@ public class OrderManager implements OrderService {
 
     @Override
     public CreateOrderResponse createOrderForSavedAddress(CreateOrderRequest request) {
+        Cart cart = cartService.getCartById(request.getCartId());
         Order order = new Order();
         order.setOrderedAt(LocalDateTime.now());
-        CreatePaymentResponse payment = paymentService.createPayment(request.getPaymentRequest());
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (CartItem cartItem : cart.getCartItems()) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProduct(cartItem.getProduct());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setPrice(cartItem.getPrice());
+            orderItem.setDiscount(cartItem.getDiscount());
+            orderItemRepository.save(orderItem);
+            productService.updateProductQuantity(cartItem.getProduct().getId(), -1 * cartItem.getQuantity());
+            cartItem.setCart(null);
 
-
-        GetCartResponse cart = cartService.getById(request.getCartId());
-
-        order.setUserId(userService.findByCartId(request.getCartId()).getId());
-        Set<Long> orderItems = new HashSet<>();
-        for (Long cartItemId:cart.getCartItems()){
-            CartItem cartItemResponse =cartItemService.getById(cartItemId);
-
-            OrderItem orderItem = orderItemService.createOrderItem(cartItemResponse);
-            // TODO:  Set order ıD FOR oRDER items
-
-            orderItems.add(orderItem.getId());
-            order.setTotalAmount(order.getTotalAmount()+ orderItem.getTotalPrice());
-            productService.updateProductQuantity(orderItem.getProductId(), -orderItem.getQuantity() );
-
+            cartItemRepository.delete(cartItem);
+            orderItems.add(orderItem);
         }
-        System.out.println(orderItems.stream().toList());
         order.setOrderItems(orderItems);
-        order.setPaymentId(payment.getId());
+        order.setTotalAmount(cart.getTotalPrice());
+
+        Payment payment = paymentService.createPayment(request.getPaymentRequest());
+        order.setPayment(payment);
+
+
+        Shipping shipping = shippingService.createShipping(request.getShippingRequest());
+        order.setShipping(shipping);
+
+        order.setUser(cart.getUser());
+
 
         Order orderCreated = repository.save(order);
 
-        paymentService.processPayment(payment.getId(), cart.getTotalPrice());
+
+        shipping.setOrder(orderCreated);
+        shippingService.updateShipping(shipping.getId(), mapper.map(shipping, UpdateShippingRequest.class));
+
+        payment.setOrder(orderCreated);
+        paymentService.processPayment(payment);
+
+        Invoice invoice = invoiceService.createInvoice(orderCreated);
+        orderCreated.setInvoice(invoice);
         cartService.emptyCart(request.getCartId());
-        shippingService.createShipping(request.getShippingRequest(), order.getId());
-        invoiceService.createInvoice(orderCreated);
+        repository.save(orderCreated);
 
 
 
-        CreateOrderResponse response = mapper.map(orderCreated, CreateOrderResponse.class);
-        response.setTotalAmount(order.getTotalAmount());
+        for (OrderItem orderItem:orderItems){
+            orderItem.setOrder(orderCreated);
+            orderItemRepository.save(orderItem);
+        }
+
+
+
+       CreateOrderResponse response = mapper.map(orderCreated, CreateOrderResponse.class);
+        response.setOrderItemIds(getOrderItemIdsAsList(orderCreated));
         return response;
     }
 
@@ -118,9 +143,41 @@ public class OrderManager implements OrderService {
 
     @Override
     public void delete(Long id) {
+        Order order = repository.findById(id).orElseThrow();
+        for (OrderItem orderItem:order.getOrderItems()){
+            orderItemRepository.delete(orderItem);
+        }
+
         repository.deleteById(id);
     }
 
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
+
+    @Override
+    public List<GetAllOrdersResponse> getAllOrdersOfUser(Long userId) {
+        List<Order> orders = repository.findAll();
+        List<GetAllOrdersResponse> response = new ArrayList<>();
+        for(Order order:orders){
+            if (order.getUser().getId() == userId){
+                GetAllOrdersResponse ordersResponse = mapper.map(order, GetAllOrdersResponse.class);
+                response.add(ordersResponse);
+            }
+
+        }
+        return response;
+    }
+
+    public List<Long> getOrderItemIdsAsList(Order order){
+        List<Long> orderItemIds= new ArrayList<>();
+        for(OrderItem orderItem :order.getOrderItems()){
+
+            orderItemIds.add(orderItem.getId());
+        }
+        return orderItemIds;
+    }
 
 
 }

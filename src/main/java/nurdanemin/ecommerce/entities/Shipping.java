@@ -17,13 +17,18 @@ public class Shipping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderId;
-    private Long addressId;
-
     private String receiversfirstName;
     private String receiverslastName;
+
     @Enumerated
     private ShippingStatus status;
+
+    @OneToOne
+    private Order order;
+    @ManyToOne
+    private Address address;
+
+
 
 
 

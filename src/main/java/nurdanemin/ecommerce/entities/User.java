@@ -9,6 +9,7 @@ import nurdanemin.ecommerce.entities.enums.Role;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,13 +27,22 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
-
     @Enumerated
     private Role role;
 
-    @ElementCollection
-    private Set<Long> addressIds;
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "user_address", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
+    private List<Address> addresses = new ArrayList<>();
 
-    private Long cartId;
+
+    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+    private Cart cart;
+
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private List<Order> orders;
+
+
+
+
 
 }

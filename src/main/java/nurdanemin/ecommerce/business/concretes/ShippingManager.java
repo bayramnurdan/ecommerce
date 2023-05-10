@@ -1,6 +1,7 @@
 package nurdanemin.ecommerce.business.concretes;
 
 import lombok.AllArgsConstructor;
+import nurdanemin.ecommerce.business.abstracts.AddressService;
 import nurdanemin.ecommerce.business.abstracts.ShippingService;
 import nurdanemin.ecommerce.business.dto.request.create.shipping.CreateShippingRequest;
 import nurdanemin.ecommerce.business.dto.request.update.shipping.UpdateShippingRequest;
@@ -21,27 +22,34 @@ import java.util.List;
 public class ShippingManager  implements ShippingService {
     private final ShippingRepository repository;
     private final ModelMapper mapper;
+    private final AddressService addressService;
     @Override
     public List<GetAllShippingsResponse> getAll() {
-        return null;
+        List<Shipping> shippings = repository.findAll();
+        List<GetAllShippingsResponse> response= shippings
+                .stream()
+                .map(shipping -> mapper.map(shipping, GetAllShippingsResponse.class))
+                .toList();
+        return response;
     }
 
     @Override
     public GetShippingResponse getById(Long id) {
        Shipping shipping = repository.findById(id).orElseThrow();
-       return null;
+       GetShippingResponse response =mapper.map(shipping, GetShippingResponse.class);
+       return  response;
     }
 
     @Override
-    public CreateShippingResponse createShipping(CreateShippingRequest request, Long orderId) {
+    public Shipping createShipping(CreateShippingRequest request) {
         Shipping shipping = new Shipping();
-        shipping.setAddressId(request.getAddressId());
         shipping.setReceiversfirstName(request.getReceiversfirstName());
         shipping.setReceiverslastName(request.getReceiverslastName());
-        shipping.setOrderId(orderId);
+        shipping.setAddress(addressService.getAddressById(request.getAddressId()));
         shipping.setStatus(ShippingStatus.BEINGPREPARED);
-        repository.save(shipping);
-        return null;
+        Shipping shippingSaved = repository.save(shipping);
+        return shippingSaved;
+
 
     }
 
@@ -53,6 +61,13 @@ public class ShippingManager  implements ShippingService {
 
     @Override
     public void delete(Long id) {
+        repository.deleteById(id);
 
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
+
 }

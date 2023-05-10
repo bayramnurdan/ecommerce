@@ -8,6 +8,7 @@ import nurdanemin.ecommerce.business.dto.response.create.shipping.CreateShipping
 import nurdanemin.ecommerce.business.dto.response.get.shipping.GetAllShippingsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.shipping.GetShippingResponse;
 import nurdanemin.ecommerce.business.dto.response.update.shipping.UpdateShippingResponse;
+import nurdanemin.ecommerce.entities.Shipping;
 
 import java.util.List;
 
@@ -15,7 +16,9 @@ public interface ShippingService {
     List<GetAllShippingsResponse> getAll();
     GetShippingResponse getById(Long id);
 
-    CreateShippingResponse createShipping(CreateShippingRequest request, Long orderId);
+    Shipping createShipping(CreateShippingRequest request);
     UpdateShippingResponse updateShipping(Long id, UpdateShippingRequest request);
     void delete(Long id);
+    void deleteAll();
+
 }

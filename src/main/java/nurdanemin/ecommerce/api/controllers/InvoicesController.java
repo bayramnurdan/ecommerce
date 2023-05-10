@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/invoices")
+@RequestMapping("/api/invoices")
 public class InvoicesController {
     private final InvoiceService service;
 
@@ -32,11 +32,7 @@ public class InvoicesController {
 
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public CreateInvoiceResponse add(@RequestBody Order order ){
-        return service.createInvoice(order);
-    }
+
 
     @PutMapping("{id}")
     public UpdateInvoiceResponse update(@PathVariable  Long id, @RequestBody UpdateInvoiceRequest request){
@@ -48,6 +44,13 @@ public class InvoicesController {
     public void delete(Long id){
         service.delete(id);
     }
+
+    @DeleteMapping("/delete-all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAll(){
+        service.deleteAll();
+    }
+
 }
 
 

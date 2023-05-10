@@ -9,6 +9,7 @@ import nurdanemin.ecommerce.entities.Address;
 import nurdanemin.ecommerce.entities.Cart;
 import nurdanemin.ecommerce.entities.enums.Role;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -24,8 +25,8 @@ public class CreateUserResponse {
     @Enumerated
     private Role role;
 
+    @ElementCollection
+    private List<Long> addressIds;
 
-    private Set<Long> addressIds;
     private Long cartId;
-
 }

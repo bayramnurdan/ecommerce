@@ -6,16 +6,16 @@ import nurdanemin.ecommerce.business.dto.response.create.payment.CreatePaymentRe
 import nurdanemin.ecommerce.business.dto.response.get.payment.GetAllPaymentsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.payment.GetPaymentResponse;
 import nurdanemin.ecommerce.business.dto.response.update.payment.UpdatePaymentResponse;
+import nurdanemin.ecommerce.entities.Payment;
 
 import java.util.List;
 
 public interface PaymentService {
     List<GetAllPaymentsResponse> getAll();
     GetPaymentResponse getById(Long id);
-
-    CreatePaymentResponse createPayment(CreatePaymentRequest request);
+    Payment createPayment(CreatePaymentRequest request);
     UpdatePaymentResponse updatePayment(Long id, UpdatePaymentRequest request);
     void delete(Long id);
-
-    void processPayment(Long paymentId, double amount);
+    void processPayment(Payment payment);
+    void deleteAll();
 }

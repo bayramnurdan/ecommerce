@@ -10,10 +10,12 @@ import nurdanemin.ecommerce.business.dto.response.create.cartItem.CreateCartItem
 import nurdanemin.ecommerce.business.dto.response.get.cart.GetAllCartsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.cartItem.GetAllCartItemsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.cartItem.GetCartItemResponse;
+import nurdanemin.ecommerce.business.dto.response.get.product.GetProductResponse;
 import nurdanemin.ecommerce.business.dto.response.update.cartItem.UpdateCartItemResponse;
 import nurdanemin.ecommerce.business.rules.ProductRules;
 import nurdanemin.ecommerce.entities.Cart;
 import nurdanemin.ecommerce.entities.CartItem;
+import nurdanemin.ecommerce.entities.Product;
 import nurdanemin.ecommerce.repositories.CartItemRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class CartItemManager implements CartItemService {
     private final CartItemRepository repository;
     private final ProductService productService;
     private final ProductRules productRules;
+
 
     @Override
     public List<GetAllCartItemsResponse> getAll() {
@@ -47,22 +50,10 @@ public class CartItemManager implements CartItemService {
     }
 
     @Override
-    public CartItem createCartItem(CreateCartItemRequest request) {
-        productRules.checkIfProductExistsById(request.getProductId());
-        CartItem cartItem = new CartItem();
-        cartItem.setProductId(request.getProductId());
-        cartItem.setCartId(request.getCartId());
-        cartItem.setDiscount(request.getDiscount());
-        cartItem.setQuantity(request.getQuantity());
-        cartItem.setPrice(productService.getById(request.getProductId()).getPrice());
-        cartItem.setTotalPrice(productService.getById(request.getProductId()).getPrice()*request.getQuantity());
-
-
-        CartItem cartItemCreated = repository.save(cartItem);
-        return cartItemCreated;
-
-
+    public void save(CartItem cartItem) {
+        repository.save(cartItem);
     }
+
 
     @Override
     public CartItem updateCartItem(Long id, CartItem request) {
@@ -78,6 +69,11 @@ public class CartItemManager implements CartItemService {
         // TODO :Business Rules
         repository.deleteById(id);
 
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
 

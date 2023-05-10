@@ -7,6 +7,7 @@ import nurdanemin.ecommerce.business.dto.request.create.address.CreateAddressReq
 import nurdanemin.ecommerce.business.dto.request.create.user.CreateUserRequest;
 import nurdanemin.ecommerce.business.dto.request.update.user.UpdateUserRequest;
 import nurdanemin.ecommerce.business.dto.response.create.user.CreateUserResponse;
+import nurdanemin.ecommerce.business.dto.response.get.order.GetAllOrdersResponse;
 import nurdanemin.ecommerce.business.dto.response.get.user.GetAllUsersResponse;
 import nurdanemin.ecommerce.business.dto.response.get.user.GetUserResponse;
 import nurdanemin.ecommerce.business.dto.response.update.user.UpdateUserResponse;
@@ -32,6 +33,7 @@ public class UsersController {
 
     }
 
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CreateUserResponse add(@RequestBody CreateUserRequest request){
@@ -48,9 +50,21 @@ public class UsersController {
         return service.addAddresstoUser(userId, addressRequest);
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(Long id){
+    public void delete(@PathVariable  Long id){
         service.delete(id);
+    }
+
+    @DeleteMapping("/delete-all")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(){
+        service.deleteAll();
+    }
+
+    @DeleteMapping("/delete-address-from-user/{userId}")
+    public  void deleteAdressForUser(@RequestParam Long addressId, @PathVariable Long userId){
+        service.deleteAdressForUser(addressId, userId);
+
     }
 }

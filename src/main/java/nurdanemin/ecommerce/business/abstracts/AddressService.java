@@ -5,6 +5,7 @@ import nurdanemin.ecommerce.business.dto.request.update.address.UpdateAddressReq
 import nurdanemin.ecommerce.business.dto.response.create.address.CreateAddressResponse;
 import nurdanemin.ecommerce.business.dto.response.get.address.GetAddressResponse;
 import nurdanemin.ecommerce.business.dto.response.get.address.GetAllAddressesResponse;
+import nurdanemin.ecommerce.business.dto.response.get.user.GetUserResponse;
 import nurdanemin.ecommerce.business.dto.response.update.address.UpdateAddressResponse;
 import nurdanemin.ecommerce.entities.Address;
 import nurdanemin.ecommerce.entities.User;
@@ -15,12 +16,15 @@ public interface AddressService {
     List<GetAllAddressesResponse> getAll();
 
     GetAddressResponse getById(Long id);
+    Address getAddressById(Long id);
 
-    CreateAddressResponse createAddress(CreateAddressRequest request);
+    Address createAddress(CreateAddressRequest request);
 
-    UpdateAddressResponse updateAddress(Long id, UpdateAddressRequest request);
 
     void delete(Long id);
+
+    void addUserForAddress(Address address, User user);
+
 
 
 }

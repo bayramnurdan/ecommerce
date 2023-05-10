@@ -10,6 +10,7 @@ import nurdanemin.ecommerce.business.dto.response.create.order.CreateOrderRespon
 import nurdanemin.ecommerce.business.dto.response.get.order.GetAllOrdersResponse;
 import nurdanemin.ecommerce.business.dto.response.get.order.GetOrderResponse;
 import nurdanemin.ecommerce.business.dto.response.update.order.UpdateOrderResponse;
+import nurdanemin.ecommerce.entities.Cart;
 
 import java.util.List;
 
@@ -21,4 +22,7 @@ public interface OrderService {
     // TODO : Create order for unknown address;
     UpdateOrderResponse updateOrder(Long id, UpdateOrderRequest request);
     void delete(Long id);
+    void deleteAll();
+    List<GetAllOrdersResponse> getAllOrdersOfUser(Long userId);
+
 }
