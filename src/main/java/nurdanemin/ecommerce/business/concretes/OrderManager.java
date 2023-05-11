@@ -31,7 +31,6 @@ public class OrderManager implements OrderService {
     private final ProductService productService;
 
     private final OrderItemRepository orderItemRepository;
-    private final CartItemRepository cartItemRepository;
 
 
     @Override
@@ -96,7 +95,7 @@ public class OrderManager implements OrderService {
         orderCreated.setInvoice(invoice);
         cartService.emptyCart(request.getCartId());
         repository.save(orderCreated);
-
+// TODO: Ayrı fonksiyon oluştur
         for (OrderItem orderItem:orderItems){
             orderItem.setOrder(orderCreated);
             orderItemRepository.save(orderItem);

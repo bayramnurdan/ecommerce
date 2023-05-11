@@ -32,7 +32,7 @@ public class UserManager  implements UserService {
     private final UserRules rules;
 
     private final AddressService addressService;
-    // TODO: Bunları servisden almalı !!!!!!
+    // TODO: Servise bağla
     private final CartRepository cartRepository;
     private final AddressRepository addressRepository;
 
@@ -78,6 +78,7 @@ public class UserManager  implements UserService {
         Cart cart = new Cart();
         cart.setCartItems(new ArrayList<>());
         user.setCart(cart);
+        // TODO : servisleri çağırmana gerek yok, persistle oluyor sanki !!
 
         User createdUser = repository.save(user);
 
