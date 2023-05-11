@@ -17,5 +17,4 @@ public interface PaymentService {
     UpdatePaymentResponse updatePayment(Long id, UpdatePaymentRequest request);
     void delete(Long id);
     void processPayment(Payment payment);
-    void deleteAll();
 }

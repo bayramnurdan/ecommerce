@@ -11,8 +11,8 @@ import nurdanemin.ecommerce.entities.enums.ShippingStatus;
 @Getter
 @Setter
 public class CreateShippingRequest {
-    private String receiversfirstName;
-    private String receiverslastName;
+    private String receiversFirstName;
+    private String receiversLastName;
     private Long addressId;
 
 }

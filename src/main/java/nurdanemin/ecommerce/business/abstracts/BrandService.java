@@ -21,6 +21,6 @@ public interface BrandService {
     CreateBrandResponse createBrand(CreateBrandRequest request);
     UpdateBrandResponse updateBrand(Long id, UpdateBrandRequest request);
     void delete(Long id);
-    void deleteAll();
+
 
 }

@@ -30,9 +30,7 @@ public class UsersController {
     @GetMapping("/{id}")
     public GetUserResponse getById(@PathVariable Long id){
         return service.getById(id);
-
     }
-
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -56,11 +54,6 @@ public class UsersController {
         service.delete(id);
     }
 
-    @DeleteMapping("/delete-all")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(){
-        service.deleteAll();
-    }
 
     @DeleteMapping("/delete-address-from-user/{userId}")
     public  void deleteAdressForUser(@RequestParam Long addressId, @PathVariable Long userId){

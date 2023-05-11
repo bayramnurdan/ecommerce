@@ -3,13 +3,9 @@ package nurdanemin.ecommerce.api.controllers;
 import lombok.AllArgsConstructor;
 import nurdanemin.ecommerce.business.abstracts.OrderService;
 import nurdanemin.ecommerce.business.dto.request.create.order.CreateOrderRequest;
-import nurdanemin.ecommerce.business.dto.request.create.payment.CreatePaymentRequest;
-import nurdanemin.ecommerce.business.dto.request.create.shipping.CreateShippingRequest;
-import nurdanemin.ecommerce.business.dto.request.update.order.UpdateOrderRequest;
 import nurdanemin.ecommerce.business.dto.response.create.order.CreateOrderResponse;
 import nurdanemin.ecommerce.business.dto.response.get.order.GetAllOrdersResponse;
 import nurdanemin.ecommerce.business.dto.response.get.order.GetOrderResponse;
-import nurdanemin.ecommerce.business.dto.response.update.order.UpdateOrderResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +29,7 @@ public class OrdersController {
 
     }
     @GetMapping("get-all-orders-of/{userId}")
-    public List<GetAllOrdersResponse> getAllOrderdsOfUser(@PathVariable Long userId) {
+    public List<GetAllOrdersResponse> getAllOrdersOfUser(@PathVariable Long userId) {
         return service.getAllOrdersOfUser(userId);
     }
 
@@ -43,10 +39,6 @@ public class OrdersController {
         return service.createOrderForSavedAddress(request);
     }
 
-    @PutMapping("{id}")
-    public UpdateOrderResponse update(@PathVariable  Long id, @RequestBody UpdateOrderRequest request){
-        return  service.updateOrder(id, request);
-    }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -54,9 +46,4 @@ public class OrdersController {
         service.delete(id);
     }
 
-    @DeleteMapping("/delete-all")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(){
-        service.deleteAll();
-    }
 }

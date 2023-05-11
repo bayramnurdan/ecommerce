@@ -17,8 +17,8 @@ public class Shipping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String receiversfirstName;
-    private String receiverslastName;
+    private String receiversFirstName;
+    private String receiversLastName;
 
     @Enumerated
     private ShippingStatus status;

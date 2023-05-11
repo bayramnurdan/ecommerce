@@ -24,10 +24,8 @@ public class GetAllProductsResponse {
 
     private String brandName;
 
-    //private Set<Long> categoryIds;
-
     private Long quantity;
     private double price;
     private double discount;
-    private double specialPrice;
+
 }

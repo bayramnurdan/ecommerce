@@ -2,49 +2,37 @@ package nurdanemin.ecommerce.business.concretes;
 
 import lombok.AllArgsConstructor;
 import nurdanemin.ecommerce.business.abstracts.*;
-import nurdanemin.ecommerce.business.dto.request.create.cartItem.CreateCartItemRequest;
 import nurdanemin.ecommerce.business.dto.request.create.order.CreateOrderRequest;
-import nurdanemin.ecommerce.business.dto.request.create.orderItem.CreateOrderItemRequest;
-import nurdanemin.ecommerce.business.dto.request.create.payment.CreatePaymentRequest;
-import nurdanemin.ecommerce.business.dto.request.create.shipping.CreateShippingRequest;
-import nurdanemin.ecommerce.business.dto.request.update.order.UpdateOrderRequest;
-import nurdanemin.ecommerce.business.dto.request.update.payment.UpdatePaymentRequest;
 import nurdanemin.ecommerce.business.dto.request.update.shipping.UpdateShippingRequest;
-import nurdanemin.ecommerce.business.dto.response.create.cartItem.CreateCartItemResponse;
 import nurdanemin.ecommerce.business.dto.response.create.order.CreateOrderResponse;
-import nurdanemin.ecommerce.business.dto.response.create.payment.CreatePaymentResponse;
-import nurdanemin.ecommerce.business.dto.response.get.cart.GetCartResponse;
-import nurdanemin.ecommerce.business.dto.response.get.cartItem.GetCartItemResponse;
 import nurdanemin.ecommerce.business.dto.response.get.order.GetAllOrdersResponse;
 import nurdanemin.ecommerce.business.dto.response.get.order.GetOrderResponse;
-import nurdanemin.ecommerce.business.dto.response.update.order.UpdateOrderResponse;
 import nurdanemin.ecommerce.entities.*;
-import nurdanemin.ecommerce.entities.enums.PaymentStatus;
 import nurdanemin.ecommerce.repositories.CartItemRepository;
 import nurdanemin.ecommerce.repositories.OrderItemRepository;
 import nurdanemin.ecommerce.repositories.OrderRepository;
-import org.aspectj.weaver.ast.Or;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class OrderManager implements OrderService {
     private final OrderRepository repository;
     private final ModelMapper mapper;
+
     private final CartService cartService;
     private final PaymentService paymentService;
     private final ShippingService shippingService;
     private final InvoiceService invoiceService;
+    private final ProductService productService;
+
     private final OrderItemRepository orderItemRepository;
     private final CartItemRepository cartItemRepository;
-    private final ProductService productService;
+
 
     @Override
     public List<GetAllOrdersResponse> getAll() {
@@ -64,10 +52,6 @@ public class OrderManager implements OrderService {
         return response;
     }
 
-    @Override
-    public List<GetOrderResponse> getOrdersByUser(Long userId) {
-        return null;
-    }
 
     @Override
     public CreateOrderResponse createOrderForSavedAddress(CreateOrderRequest request) {
@@ -83,11 +67,9 @@ public class OrderManager implements OrderService {
             orderItem.setDiscount(cartItem.getDiscount());
             orderItemRepository.save(orderItem);
             productService.updateProductQuantity(cartItem.getProduct().getId(), -1 * cartItem.getQuantity());
-            cartItem.setCart(null);
-
-            cartItemRepository.delete(cartItem);
             orderItems.add(orderItem);
         }
+        cartService.emptyCart(request.getCartId());
         order.setOrderItems(orderItems);
         order.setTotalAmount(cart.getTotalPrice());
 
@@ -115,8 +97,6 @@ public class OrderManager implements OrderService {
         cartService.emptyCart(request.getCartId());
         repository.save(orderCreated);
 
-
-
         for (OrderItem orderItem:orderItems){
             orderItem.setOrder(orderCreated);
             orderItemRepository.save(orderItem);
@@ -130,14 +110,7 @@ public class OrderManager implements OrderService {
     }
 
 
-    @Override
-    public UpdateOrderResponse updateOrder(Long id, UpdateOrderRequest request) {
-        Order order = mapper.map(request, Order.class);
-        order.setId(id);
-        repository.save(order);
-        UpdateOrderResponse response = mapper.map(order, UpdateOrderResponse.class);
-        return response;
-    }
+
 
 
 
@@ -151,10 +124,6 @@ public class OrderManager implements OrderService {
         repository.deleteById(id);
     }
 
-    @Override
-    public void deleteAll() {
-        repository.deleteAll();
-    }
 
     @Override
     public List<GetAllOrdersResponse> getAllOrdersOfUser(Long userId) {

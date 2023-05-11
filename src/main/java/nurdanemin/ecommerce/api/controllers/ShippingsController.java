@@ -28,9 +28,7 @@ public class ShippingsController {
     @GetMapping("/{id}")
     public GetShippingResponse getById(@PathVariable Long id){
         return service.getById(id);
-
     }
-
 
 
     @PutMapping("{id}")
@@ -43,9 +41,5 @@ public class ShippingsController {
     public void delete(Long id){
         service.delete(id);
     }
-    @DeleteMapping("/delete-all")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAll(){
-        service.deleteAll();;
-    }
+
 }

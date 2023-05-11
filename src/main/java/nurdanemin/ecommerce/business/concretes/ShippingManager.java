@@ -43,19 +43,30 @@ public class ShippingManager  implements ShippingService {
     @Override
     public Shipping createShipping(CreateShippingRequest request) {
         Shipping shipping = new Shipping();
-        shipping.setReceiversfirstName(request.getReceiversfirstName());
-        shipping.setReceiverslastName(request.getReceiverslastName());
+        shipping.setReceiversFirstName(request.getReceiversFirstName());
+        shipping.setReceiversLastName(request.getReceiversLastName());
         shipping.setAddress(addressService.getAddressById(request.getAddressId()));
         shipping.setStatus(ShippingStatus.BEINGPREPARED);
         Shipping shippingSaved = repository.save(shipping);
         return shippingSaved;
-
-
     }
 
     @Override
     public UpdateShippingResponse updateShipping(Long id, UpdateShippingRequest request) {
-        return null;
+        Shipping shipping = repository.findById(id).orElseThrow();
+        if (!shipping.getStatus().equals(ShippingStatus.BEINGPREPARED)){
+            throw new RuntimeException("It is too late to update shipping info");
+
+        }
+        shipping.setReceiversFirstName(request.getReceiversfirstName());
+        shipping.setReceiversLastName(request.getReceiverslastName());
+        shipping.setAddress(addressService.getAddressById(request.getAddressId()));
+        Shipping savedShipping = repository.save(shipping);
+        UpdateShippingResponse response = mapper.map(savedShipping, UpdateShippingResponse.class);
+        response.setAddressId(response.getAddressId());
+        response.setOrderId(shipping.getOrder().getId());
+        return response;
+
     }
 
 
@@ -65,9 +76,5 @@ public class ShippingManager  implements ShippingService {
 
     }
 
-    @Override
-    public void deleteAll() {
-        repository.deleteAll();
-    }
 
 }

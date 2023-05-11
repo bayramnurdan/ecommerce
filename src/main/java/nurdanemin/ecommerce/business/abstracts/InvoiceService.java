@@ -14,10 +14,7 @@ import java.util.List;
 public interface InvoiceService {
     List<GetAllInvoicesResponse> getAll();
     GetInvoiceResponse getById(Long id);
-
     Invoice createInvoice(Order order);
-    UpdateInvoiceResponse updateInvoice(Long id, UpdateInvoiceRequest request);
     void delete(Long id);
 
-    void deleteAll();
 }

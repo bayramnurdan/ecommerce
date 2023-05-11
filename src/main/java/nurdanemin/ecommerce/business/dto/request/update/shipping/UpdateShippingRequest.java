@@ -11,17 +11,9 @@ import nurdanemin.ecommerce.entities.enums.ShippingStatus;
 @Getter
 @Setter
 public class UpdateShippingRequest {
-
-    private Long id;
-
-
     private String receiversfirstName;
     private String receiverslastName;
 
-
     private Long addressId;
 
-    private ShippingStatus status;
-
-    private Long orderId;
 }

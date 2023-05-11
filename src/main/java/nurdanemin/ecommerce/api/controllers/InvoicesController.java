@@ -34,22 +34,12 @@ public class InvoicesController {
 
 
 
-    @PutMapping("{id}")
-    public UpdateInvoiceResponse update(@PathVariable  Long id, @RequestBody UpdateInvoiceRequest request){
-        return  service.updateInvoice(id, request);
-    }
-
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(Long id){
         service.delete(id);
     }
 
-    @DeleteMapping("/delete-all")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAll(){
-        service.deleteAll();
-    }
 
 }
 

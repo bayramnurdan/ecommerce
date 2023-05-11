@@ -3,11 +3,8 @@ package nurdanemin.ecommerce.business.concretes;
 import lombok.AllArgsConstructor;
 import nurdanemin.ecommerce.business.abstracts.AddressService;
 import nurdanemin.ecommerce.business.dto.request.create.address.CreateAddressRequest;
-import nurdanemin.ecommerce.business.dto.request.update.address.UpdateAddressRequest;
-import nurdanemin.ecommerce.business.dto.response.create.address.CreateAddressResponse;
 import nurdanemin.ecommerce.business.dto.response.get.address.GetAddressResponse;
 import nurdanemin.ecommerce.business.dto.response.get.address.GetAllAddressesResponse;
-import nurdanemin.ecommerce.business.dto.response.update.address.UpdateAddressResponse;
 import nurdanemin.ecommerce.business.rules.AddressRules;
 import nurdanemin.ecommerce.entities.Address;
 import nurdanemin.ecommerce.entities.User;
@@ -16,9 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 @AllArgsConstructor
@@ -47,6 +43,7 @@ public class AddressManager implements AddressService {
 
     @Override
     public Address getAddressById(Long id) {
+        rules.checkIfExistsById(id);
         Address address = repository.findById(id).orElseThrow();
         return address;
     }
@@ -59,25 +56,22 @@ public class AddressManager implements AddressService {
                     request.getApartmentNumber(), request.getBuilding(), request.getStreet(),
                     request.getDistrict(), request.getCity(), request.getCountry());
             return address;
-        }else {
-
-            Address address = mapper.map(request, Address.class);
-            address.setUsers(new ArrayList<>());
-            Address createdAddres = repository.save(address);
-            return createdAddres;
         }
+
+        Address address = mapper.map(request, Address.class);
+        address.setUsers(new ArrayList<>());
+        Address createdAddres = repository.save(address);
+        return createdAddres;
+
     }
+
     @Override
     public void addUserForAddress(Address address, User user) {
-        List<User> ownersOfAddress  =address.getUsers();
+        List<User> ownersOfAddress = address.getUsers();
         ownersOfAddress.add(user);
         address.setUsers(ownersOfAddress);
         repository.save(address);
-
     }
-
-
-
 
 
 
@@ -85,7 +79,6 @@ public class AddressManager implements AddressService {
     public void delete(Long id) {
         rules.checkIfExistsById(id);
         repository.deleteById(id);
-
     }
 
 

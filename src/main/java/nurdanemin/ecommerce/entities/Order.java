@@ -23,8 +23,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-
     private double totalAmount;
     private double orderDiscount;
     private LocalDateTime orderedAt;

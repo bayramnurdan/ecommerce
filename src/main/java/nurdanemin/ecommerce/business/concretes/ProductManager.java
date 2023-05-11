@@ -109,11 +109,9 @@ public class ProductManager  implements ProductService {
 
     @Override
     public UpdateProductResponse updateProduct(Long id, UpdateProductRequest request) {
-
-        // TODO HIÇBİR ŞEKİLDE DOĞRU ÇALIŞMIYOR
         rules.checkIfProductExistsById(id);
-        Product product = mapper.map(request, Product.class);
-        product.setId(id);
+        Product product = repository.findById(id).orElseThrow();
+        product.setQuantity(request.getQuantity());
         Product createdProd = repository.save(product);
         UpdateProductResponse response = mapper.map(createdProd, UpdateProductResponse.class);
         return response;
@@ -141,10 +139,6 @@ public class ProductManager  implements ProductService {
         repository.save(product);
     }
 
-    @Override
-    public void deleteAll() {
-        repository.deleteAll();
-    }
 
     public List<String> mapProductCategoriesAsNamesList(Product product){
         List<String> categoryNames = new ArrayList<>();

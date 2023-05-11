@@ -1,31 +1,22 @@
 package nurdanemin.ecommerce.business.concretes;
 
 import lombok.AllArgsConstructor;
-import nurdanemin.ecommerce.business.abstracts.CartItemService;
 import nurdanemin.ecommerce.business.abstracts.CartService;
 import nurdanemin.ecommerce.business.abstracts.ProductService;
-import nurdanemin.ecommerce.business.abstracts.UserService;
-import nurdanemin.ecommerce.business.dto.request.create.cart.CreateCartRequest;
 import nurdanemin.ecommerce.business.dto.request.create.cartItem.CreateCartItemRequest;
-import nurdanemin.ecommerce.business.dto.request.update.cart.UpdateCartRequest;
-import nurdanemin.ecommerce.business.dto.response.create.address.CreateAddressResponse;
-import nurdanemin.ecommerce.business.dto.response.create.cart.CreateCartResponse;
-import nurdanemin.ecommerce.business.dto.response.create.cartItem.CreateCartItemResponse;
 import nurdanemin.ecommerce.business.dto.response.get.cart.GetAllCartsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.cart.GetCartResponse;
-import nurdanemin.ecommerce.business.dto.response.update.cart.UpdateCartResponse;
-import nurdanemin.ecommerce.business.rules.ProductRules;
 import nurdanemin.ecommerce.entities.Cart;
 import nurdanemin.ecommerce.entities.CartItem;
 import nurdanemin.ecommerce.entities.Product;
-import nurdanemin.ecommerce.entities.User;
 import nurdanemin.ecommerce.repositories.CartItemRepository;
 import nurdanemin.ecommerce.repositories.CartRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -33,11 +24,8 @@ public class CartManager implements CartService {
     private final CartRepository repository;
     private final CartItemRepository cartItemRepository;
     private  final ProductService productService;
-
-
-
-
     private ModelMapper mapper;
+
     @Override
     public List<GetAllCartsResponse> getAll() {
         List<Cart> carts = repository.findAll();
@@ -53,7 +41,6 @@ public class CartManager implements CartService {
         Cart cart = repository.findById(id).orElseThrow();
         GetCartResponse response = mapper.map(cart, GetCartResponse.class);
         response.setUserId(cart.getUser().getId());
-        //response.setProductNames(mapCartItemNamesAsList(cart));
         response.setCartItemIds(mapCartItemIdsAsList(cart));
         return response;
     }
@@ -64,15 +51,6 @@ public class CartManager implements CartService {
         return cart;
     }
 
-
-    @Override
-    public UpdateCartResponse updateCart(Long id, UpdateCartRequest request) {
-       Cart cart = mapper.map(request, Cart.class);
-       cart.setId(id);
-       Cart createdCart = repository.save(cart);
-       UpdateCartResponse response = mapper.map(createdCart, UpdateCartResponse.class);
-       return response;
-    }
 
 
     @Override
@@ -86,15 +64,13 @@ public class CartManager implements CartService {
             Cart cart = repository.findById(cartId).orElseThrow();
             List<CartItem> cartItems= cart.getCartItems();
             for (int i=0; i<cartItems.size(); i++){
-                cartItemRepository.delete(cartItems.get(i));
+                cartItems.get(i).setCart(null);
+                cartItems.remove(cartItems.get(i));
+
             }
             cart.setCartItems(cartItems);
             cart.setTotalPrice(0);
-
-
-            Cart cartSaved = repository.save(cart);
-
-
+            repository.save(cart);
     }
 
     @Override
@@ -130,8 +106,9 @@ public class CartManager implements CartService {
     public GetCartResponse deleteItemFromCart(Long cartId, Long cartItemId) {
     Cart cart = repository.findById(cartId).orElseThrow();
     List<CartItem> cartItems = cart.getCartItems();
-    CartItem cartItem =cartItemRepository.findById(cartItemId).orElseThrow();
+    CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow();
     cartItems.remove(cartItem);
+    cartItem.setCart(null);
     Cart cartSaved = repository.save(cart);
     setCartTotalPrice(cartSaved);
     return getById(cartId);
@@ -139,28 +116,19 @@ public class CartManager implements CartService {
     }
 
     @Override
-    public GetCartResponse updateItemQuantity(Long cartItemId) {
-        return null;
-    }
+    public GetCartResponse updateItemQuantity(Long cartId, Long cartItemId, int quantity) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow();
+        cartItem.setQuantity(quantity);
+        cartItemRepository.save(cartItem);
+        setCartTotalPrice(repository.findById(cartId).orElseThrow());
 
-    @Override
-    public void deleteAll() {
-        repository.deleteAll();
-    }
-
-
-
-
-    public Set<String> mapCartItemNamesAsList(Cart cart){
-        Set<String> productNames = new HashSet<>();
-        for (CartItem cartItem:cart.getCartItems()){
-            String productName = cartItem.getProduct().getName();
-            productNames.add(productName);
-
-        }
-        return productNames;
+        return getById(cartId);
 
     }
+
+
+
+
     public Set<Long> mapCartItemIdsAsList(Cart cart){
         Set<Long> cartItemIds = new HashSet<>();
         for (CartItem cartItem:cart.getCartItems()){

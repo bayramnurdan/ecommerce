@@ -17,13 +17,13 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String cardNumber;
     private String cardHolder;
     private int cardExpirationYear;
     private int cardExpirationMonth;
     private String cardCvv;
     private double balance;
+    @Enumerated
     private PaymentStatus status;
 
     @OneToOne(mappedBy = "payment", cascade = { CascadeType.PERSIST, CascadeType.MERGE })

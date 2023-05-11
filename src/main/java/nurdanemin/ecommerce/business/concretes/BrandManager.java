@@ -40,6 +40,7 @@ public class BrandManager implements BrandService {
 
     @Override
     public Brand getBrandById(Long id) {
+        rules.checkIfBrandExistsById(id);
         Brand brand = repository.findById(id).orElseThrow();
         return brand;
     }
@@ -73,8 +74,4 @@ public class BrandManager implements BrandService {
 
     }
 
-    @Override
-    public void deleteAll() {
-        repository.deleteAll();
-    }
 }

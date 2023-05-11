@@ -23,6 +23,6 @@ public interface ProductService {
     UpdateProductResponse updateProduct(Long id, UpdateProductRequest request);
     void delete(Long id);
     void updateProductQuantity(Long productId, int amount);
-    void deleteAll();
+
 
 }

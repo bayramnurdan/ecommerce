@@ -62,9 +62,4 @@ public class PaymentManager implements PaymentService {
 
     }
 
-
-    @Override
-    public void deleteAll() {
-        repository.deleteAll();
-    }
 }

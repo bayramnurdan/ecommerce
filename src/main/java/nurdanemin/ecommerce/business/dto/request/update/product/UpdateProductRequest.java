@@ -16,5 +16,4 @@ public class UpdateProductRequest {
     private Long quantity;
     private double price;
     private double discount;
-    private double specialPrice;
 }

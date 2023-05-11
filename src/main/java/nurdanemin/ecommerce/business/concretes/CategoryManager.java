@@ -66,9 +66,5 @@ public class CategoryManager  implements CategoryService {
         repository.deleteById(id);
     }
 
-    @Override
-    public void deleteAll() {
 
-        repository.deleteAll();
-    }
 }

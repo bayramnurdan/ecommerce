@@ -53,10 +53,6 @@ public class InvoiceManager implements InvoiceService {
 
     }
 
-    @Override
-    public UpdateInvoiceResponse updateInvoice(Long id, UpdateInvoiceRequest request) {
-        return null;
-    }
 
     @Override
     public void delete(Long id) {
@@ -65,8 +61,4 @@ public class InvoiceManager implements InvoiceService {
 
     }
 
-    @Override
-    public void deleteAll() {
-        repository.deleteAll();
-    }
 }

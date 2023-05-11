@@ -27,6 +27,5 @@ public class CreateProductRequest {
     @Min(1)
     private double price;
     private double discount;
-    private double specialPrice;
 
 }

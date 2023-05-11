@@ -25,5 +25,4 @@ public class CreateProductResponse {
     private Long quantity;
     private double price;
     private double discount;
-    private double specialPrice;
 }

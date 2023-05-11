@@ -17,7 +17,4 @@ public class UpdateUserResponse {
     private String firstName;
     private String lastName;
     private String email;
-
-    private List<Long> addressIds;
-    private Long cartId;
 }

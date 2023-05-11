@@ -16,10 +16,7 @@ public class GetProductResponse {
     private Long id;
     private String name;
 
-
     private String brandName;
-    //private Set<Long> categoryIds;
-
     private Long quantity;
     private double price;
     private double discount;

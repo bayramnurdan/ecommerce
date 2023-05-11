@@ -1,12 +1,8 @@
 package nurdanemin.ecommerce.business.abstracts;
 
 import nurdanemin.ecommerce.business.dto.request.create.address.CreateAddressRequest;
-import nurdanemin.ecommerce.business.dto.request.update.address.UpdateAddressRequest;
-import nurdanemin.ecommerce.business.dto.response.create.address.CreateAddressResponse;
 import nurdanemin.ecommerce.business.dto.response.get.address.GetAddressResponse;
 import nurdanemin.ecommerce.business.dto.response.get.address.GetAllAddressesResponse;
-import nurdanemin.ecommerce.business.dto.response.get.user.GetUserResponse;
-import nurdanemin.ecommerce.business.dto.response.update.address.UpdateAddressResponse;
 import nurdanemin.ecommerce.entities.Address;
 import nurdanemin.ecommerce.entities.User;
 
@@ -19,7 +15,6 @@ public interface AddressService {
     Address getAddressById(Long id);
 
     Address createAddress(CreateAddressRequest request);
-
 
     void delete(Long id);
 

@@ -24,8 +24,6 @@ public interface UserService {
 
     GetUserResponse addAddresstoUser(Long userId, CreateAddressRequest addressRequest);
 
-    void deleteAll();
-
     void deleteAdressForUser(Long addressId, Long userId);
 
 
