@@ -127,7 +127,7 @@ public class UserManager  implements UserService {
     }
 
     @Override
-    public void deleteAdressForUser(Long addressId, Long userId) {
+    public void deleteAdsressFromUser(Long addressId, Long userId) {
         rules.checkIfExistsById(userId);
         Address address = addressService.getAddressById(addressId);
         User user = repository.findById(userId).orElseThrow();

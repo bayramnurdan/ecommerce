@@ -8,6 +8,7 @@ import nurdanemin.ecommerce.business.dto.response.create.payment.CreatePaymentRe
 import nurdanemin.ecommerce.business.dto.response.get.payment.GetAllPaymentsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.payment.GetPaymentResponse;
 import nurdanemin.ecommerce.business.dto.response.update.payment.UpdatePaymentResponse;
+import nurdanemin.ecommerce.business.rules.PaymentRules;
 import nurdanemin.ecommerce.entities.Payment;
 import nurdanemin.ecommerce.entities.enums.PaymentStatus;
 import nurdanemin.ecommerce.repositories.PaymentRepository;
@@ -20,6 +21,7 @@ import java.util.List;
 public class PaymentManager implements PaymentService {
     private final ModelMapper mapper;
     private final PaymentRepository repository;
+    private final PaymentRules rules;
     @Override
     public List<GetAllPaymentsResponse> getAll() {
         return null;
@@ -41,16 +43,11 @@ public class PaymentManager implements PaymentService {
 
     }
     public void processPayment(Payment payment){
-        //TODO : Check if balance is enough.
+        rules.checkIfBalanceIsEnough(payment);
         double newBalance = payment.getBalance()-payment.getOrder().getTotalAmount();
         payment.setBalance(newBalance);
         payment.setStatus(PaymentStatus.SUCCESS);
         repository.save(payment);
-    }
-
-    @Override
-    public UpdatePaymentResponse updatePayment(Long id, UpdatePaymentRequest request) {
-        return null;
     }
 
 

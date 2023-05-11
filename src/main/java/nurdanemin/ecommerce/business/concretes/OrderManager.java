@@ -8,7 +8,6 @@ import nurdanemin.ecommerce.business.dto.response.create.order.CreateOrderRespon
 import nurdanemin.ecommerce.business.dto.response.get.order.GetAllOrdersResponse;
 import nurdanemin.ecommerce.business.dto.response.get.order.GetOrderResponse;
 import nurdanemin.ecommerce.entities.*;
-import nurdanemin.ecommerce.repositories.CartItemRepository;
 import nurdanemin.ecommerce.repositories.OrderItemRepository;
 import nurdanemin.ecommerce.repositories.OrderRepository;
 import org.modelmapper.ModelMapper;
@@ -57,18 +56,8 @@ public class OrderManager implements OrderService {
         Cart cart = cartService.getCartById(request.getCartId());
         Order order = new Order();
         order.setOrderedAt(LocalDateTime.now());
-        List<OrderItem> orderItems = new ArrayList<>();
-        for (CartItem cartItem : cart.getCartItems()) {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProduct(cartItem.getProduct());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setPrice(cartItem.getPrice());
-            orderItem.setDiscount(cartItem.getDiscount());
-            orderItemRepository.save(orderItem);
-            productService.updateProductQuantity(cartItem.getProduct().getId(), -1 * cartItem.getQuantity());
-            orderItems.add(orderItem);
-        }
-        cartService.emptyCart(request.getCartId());
+        order.setUser(cart.getUser());
+        List<OrderItem> orderItems = mapCartItemsToOrderItems(cart);
         order.setOrderItems(orderItems);
         order.setTotalAmount(cart.getTotalPrice());
 
@@ -78,8 +67,6 @@ public class OrderManager implements OrderService {
 
         Shipping shipping = shippingService.createShipping(request.getShippingRequest());
         order.setShipping(shipping);
-
-        order.setUser(cart.getUser());
 
 
         Order orderCreated = repository.save(order);
@@ -95,11 +82,8 @@ public class OrderManager implements OrderService {
         orderCreated.setInvoice(invoice);
         cartService.emptyCart(request.getCartId());
         repository.save(orderCreated);
-// TODO: Ayrı fonksiyon oluştur
-        for (OrderItem orderItem:orderItems){
-            orderItem.setOrder(orderCreated);
-            orderItemRepository.save(orderItem);
-        }
+        setOrderForOrderItems(orderItems, orderCreated);
+
 
 
 
@@ -145,6 +129,31 @@ public class OrderManager implements OrderService {
             orderItemIds.add(orderItem.getId());
         }
         return orderItemIds;
+    }
+
+    public void setOrderForOrderItems(List<OrderItem> orderItems, Order orderCreated){
+        for (OrderItem orderItem:orderItems){
+            orderItem.setOrder(orderCreated);
+            orderItemRepository.save(orderItem);
+        }
+
+    }
+
+    public List<OrderItem> mapCartItemsToOrderItems(Cart cart){
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (CartItem cartItem : cart.getCartItems()) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProduct(cartItem.getProduct());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setPrice(cartItem.getPrice());
+            orderItem.setDiscount(cartItem.getDiscount());
+            orderItemRepository.save(orderItem);
+            productService.updateProductQuantity(cartItem.getProduct().getId(), -1 * cartItem.getQuantity());
+            orderItems.add(orderItem);
+        }
+        cartService.emptyCart(cart.getId());
+        return orderItems;
+
     }
 
 
