@@ -5,6 +5,7 @@ import nurdanemin.ecommerce.business.dto.request.create.cartItem.CreateCartItemR
 import nurdanemin.ecommerce.business.dto.response.get.cart.GetAllCartsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.cart.GetCartResponse;
 import nurdanemin.ecommerce.entities.Cart;
+import nurdanemin.ecommerce.entities.User;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public interface CartService {
     List<GetAllCartsResponse> getAll();
     GetCartResponse getById(Long id);
     Cart getCartById(Long id);
+    Cart createCart();
 
     void delete(Long id);
     void emptyCart(Long id);
@@ -21,5 +23,6 @@ public interface CartService {
     GetCartResponse deleteItemFromCart(Long cartId, Long cartItemId);
     GetCartResponse updateItemQuantity(Long cartId, Long cartItemId, int quantity);
 
-    void setCartTotalPrice(Cart cart);
+    void setCartTotalPrice(Long cartId);
+    void setUserForCart(Cart cart, User user);
 }

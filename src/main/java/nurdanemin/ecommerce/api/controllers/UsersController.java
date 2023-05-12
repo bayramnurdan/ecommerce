@@ -56,7 +56,7 @@ public class UsersController {
 
     @DeleteMapping("/delete-address-from-user/{userId}")
     public  void deleteAdressForUser(@RequestParam Long addressId, @PathVariable Long userId){
-        service.deleteAdsressFromUser(addressId, userId);
+        service.deleteAddressFromUser(addressId, userId);
 
     }
 }

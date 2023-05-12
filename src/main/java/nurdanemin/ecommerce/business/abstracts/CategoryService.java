@@ -10,6 +10,7 @@ import nurdanemin.ecommerce.business.dto.response.create.category.CreateCategory
 import nurdanemin.ecommerce.business.dto.response.get.category.GetAllCategoriesResponse;
 import nurdanemin.ecommerce.business.dto.response.get.category.GetCategoryResponse;
 import nurdanemin.ecommerce.business.dto.response.update.category.UpdateCategoryResponse;
+import nurdanemin.ecommerce.entities.Category;
 
 import java.util.List;
 
@@ -20,4 +21,5 @@ public interface CategoryService {
     CreateCategoryResponse createCategory(CreateCategoryRequest request);
     UpdateCategoryResponse updateCategory(Long id, UpdateCategoryRequest request);
     void delete(Long id);
+    Category getCategory(String name);
 }

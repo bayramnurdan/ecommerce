@@ -2,6 +2,7 @@ package nurdanemin.ecommerce.business.concretes;
 
 import lombok.AllArgsConstructor;
 import nurdanemin.ecommerce.business.abstracts.AddressService;
+import nurdanemin.ecommerce.business.abstracts.CartService;
 import nurdanemin.ecommerce.business.abstracts.UserService;
 import nurdanemin.ecommerce.business.dto.request.create.address.CreateAddressRequest;
 import nurdanemin.ecommerce.business.dto.request.create.user.CreateUserRequest;
@@ -15,8 +16,6 @@ import nurdanemin.ecommerce.entities.Address;
 import nurdanemin.ecommerce.entities.Cart;
 import nurdanemin.ecommerce.entities.User;
 import nurdanemin.ecommerce.entities.enums.Role;
-import nurdanemin.ecommerce.repositories.AddressRepository;
-import nurdanemin.ecommerce.repositories.CartRepository;
 import nurdanemin.ecommerce.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -31,10 +30,8 @@ public class UserManager  implements UserService {
     private final ModelMapper mapper;
     private final UserRules rules;
 
+    private final CartService cartService;
     private final AddressService addressService;
-    // TODO: Servise bağla
-    private final CartRepository cartRepository;
-    private final AddressRepository addressRepository;
 
     @Override
     public List<GetAllUsersResponse> getAll() {
@@ -75,25 +72,20 @@ public class UserManager  implements UserService {
         Address usersAddress = addressService.createAddress(request.getAddress());
         user.setAddresses(List.of(usersAddress));
 
-        Cart cart = new Cart();
-        cart.setCartItems(new ArrayList<>());
+        Cart cart = cartService.createCart();
         user.setCart(cart);
-        // TODO : servisleri çağırmana gerek yok, persistle oluyor sanki !!
 
         User createdUser = repository.save(user);
 
-        cart.setUser(createdUser);
-        Cart cartCreated = cartRepository.save(cart);
+        cartService.setUserForCart(cart, createdUser);
 
         addressService.addUserForAddress(usersAddress, createdUser);
 
 
         CreateUserResponse response = mapper.map(createdUser, CreateUserResponse.class);
         response.setAddressIds(getUsersAddressesAsList(createdUser));
-        response.setCartId(cartCreated.getId());
+        response.setCartId(cart.getId());
         return response;
-
-
     }
 
     @Override
@@ -127,16 +119,15 @@ public class UserManager  implements UserService {
     }
 
     @Override
-    public void deleteAdsressFromUser(Long addressId, Long userId) {
+    public void deleteAddressFromUser(Long addressId, Long userId) {
         rules.checkIfExistsById(userId);
         Address address = addressService.getAddressById(addressId);
         User user = repository.findById(userId).orElseThrow();
-        List<User>  userList = address.getUsers();
+
         List<Address> addressList = user.getAddresses();
-        userList.remove(user);
         addressList.remove(address);
         repository.save(user);
-        addressRepository.save(address);
+        addressService.updateOwnersOfAddress(addressId, user);
     }
 
 

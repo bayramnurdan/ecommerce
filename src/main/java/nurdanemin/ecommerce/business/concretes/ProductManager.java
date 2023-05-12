@@ -29,8 +29,9 @@ import java.util.Set;
 public class ProductManager  implements ProductService {
     private final ProductRepository repository;
     private final ModelMapper mapper;
-    private final CategoryRepository categoryRepository;
     private final ProductRules rules;
+
+    private final CategoryService categoryService;
     private final BrandService brandService;
 
     @Override
@@ -127,7 +128,7 @@ public class ProductManager  implements ProductService {
     public Product  setCategories(Product product, Set<String> categoryNames){
         List<Category> productCategories = product.getCategories();
         for (String categoryName:categoryNames){
-            Category category = categoryRepository.findByNameIgnoreCase(categoryName);
+            Category category = categoryService.getCategory(categoryName);
             productCategories.add(category);
         }
         return product;

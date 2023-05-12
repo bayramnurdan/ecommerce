@@ -19,6 +19,7 @@ public interface AddressService {
     void delete(Long id);
 
     void addUserForAddress(Address address, User user);
+    void updateOwnersOfAddress(Long addressId, User user);
 
 
 

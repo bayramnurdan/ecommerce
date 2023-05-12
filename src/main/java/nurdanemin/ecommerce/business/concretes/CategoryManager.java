@@ -66,5 +66,10 @@ public class CategoryManager  implements CategoryService {
         repository.deleteById(id);
     }
 
+    @Override
+    public Category getCategory(String name) {
+        return repository.findByNameIgnoreCase(name);
+    }
+
 
 }

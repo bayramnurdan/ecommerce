@@ -60,9 +60,8 @@ public class AddressManager implements AddressService {
 
         Address address = mapper.map(request, Address.class);
         address.setUsers(new ArrayList<>());
-        Address createdAddres = repository.save(address);
-        return createdAddres;
-
+        Address createdAddress = repository.save(address);
+        return createdAddress;
     }
 
     @Override
@@ -79,6 +78,13 @@ public class AddressManager implements AddressService {
     public void delete(Long id) {
         rules.checkIfExistsById(id);
         repository.deleteById(id);
+    }
+
+    public void updateOwnersOfAddress(Long addressId, User user){
+        Address address = repository.findById(addressId).orElseThrow();
+        List<User> addressOwners = address.getUsers();
+        addressOwners.remove(user);
+        repository.save(address);
     }
 
 
