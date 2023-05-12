@@ -1,6 +1,7 @@
 package nurdanemin.ecommerce.business.rules;
 
 import lombok.AllArgsConstructor;
+import nurdanemin.ecommerce.core.exceptions.BusinessException;
 import nurdanemin.ecommerce.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +12,13 @@ public class UserRules {
 
     public void checkIfEmailExists(String email){
         if (repository.existsByEmail(email)){
-            throw new RuntimeException("EMAIL_ALREADY_EXISTS");
+            throw new BusinessException("EMAIL_ALREADY_EXISTS");
         }
     }
 
     public void checkIfExistsById(Long id){
         if (!repository.existsById(id)){
-            throw new RuntimeException("NOT_EXISTS_BY_ID");
+            throw new BusinessException("NOT_EXISTS_BY_ID");
         }
     }
 }

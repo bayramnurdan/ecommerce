@@ -18,7 +18,6 @@ public interface ProductService {
     List<GetAllProductsResponse> getAllByBrandName(String brandName);
     Product getProductbyId(Long id);
 
-
     CreateProductResponse createProduct(CreateProductRequest request);
     UpdateProductResponse updateProduct(Long id, UpdateProductRequest request);
     void delete(Long id);

@@ -1,6 +1,8 @@
 package nurdanemin.ecommerce.business.rules;
 
 import lombok.AllArgsConstructor;
+import nurdanemin.ecommerce.common.constants.Messages;
+import nurdanemin.ecommerce.core.exceptions.BusinessException;
 import nurdanemin.ecommerce.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,15 +12,13 @@ public class CategoryRules {
     private final CategoryRepository repository;
     public void checkIfCategoryAlreadyExists(String categoryName){
         if (repository.existsByNameIgnoreCase(categoryName)){
-            // TODO : Business exception
-            throw new RuntimeException("CATEGORY_ALREADY_EXISTS");
+            throw new BusinessException(Messages.Category.Exists);
         }
     }
 
     public void checkIfCategoryExistsById(Long brandId){
         if (!repository.existsById(brandId)){
-            // TODO : Business exception
-            throw new RuntimeException("THERE_IS_NO_SUCH_CATEGORY");
+            throw new BusinessException(Messages.Category.NotExists);
         }
     }
 }

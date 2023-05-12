@@ -1,7 +1,10 @@
 package nurdanemin.ecommerce.business.rules;
 
 import lombok.AllArgsConstructor;
+import nurdanemin.ecommerce.common.constants.Messages;
+import nurdanemin.ecommerce.core.exceptions.BusinessException;
 import nurdanemin.ecommerce.repositories.ProductRepository;
+import org.aspectj.bridge.Message;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,13 +14,13 @@ public class ProductRules {
 
     public void checkIfProductExistsInBrand(String productName, Long brandId){
         if (repository.existsByNameIgnoreCaseAndBrandId(productName, brandId)){
-            throw new RuntimeException("PRODUCT_ALREADY_EXISTS");
+            throw new BusinessException(Messages.Product.Exists);
         }
     }
 
     public void checkIfProductExistsById(Long id){
         if (!repository.existsById(id)){
-            throw new RuntimeException("PRODUCT_DOES_NOT_EXISTS");
+            throw new BusinessException(Messages.Product.NotExists);
         }
     }
 

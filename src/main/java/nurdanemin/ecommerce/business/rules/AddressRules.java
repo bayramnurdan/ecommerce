@@ -1,6 +1,8 @@
 package nurdanemin.ecommerce.business.rules;
 
 import lombok.AllArgsConstructor;
+import nurdanemin.ecommerce.common.constants.Messages;
+import nurdanemin.ecommerce.core.exceptions.BusinessException;
 import nurdanemin.ecommerce.repositories.AddressRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ public class AddressRules {
 
     public void checkIfExistsById(Long id){
         if (!repository.existsById(id)){
-            throw new RuntimeException("ADDRESS_NOT_EXISTS");
+            throw new BusinessException(Messages.Address.NotExists);
         }
     }
 

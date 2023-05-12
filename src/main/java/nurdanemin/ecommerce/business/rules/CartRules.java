@@ -8,7 +8,4 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class CartRules {
     private final CartRepository repository;
-    public void checkIfCartExistsById(Long id){
-
-    }
 }

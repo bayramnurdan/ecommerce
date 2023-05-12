@@ -13,7 +13,6 @@ public interface CartItemService {
     CartItem getCartItemById(Long id);
     void delete(Long id);
     CartItem createCartItem(CreateCartItemRequest request);
-
     void setCartForCartItem(CartItem cartItem, Cart cart);
     void updateQuantity(Long cartItemId, int quantity);
 
