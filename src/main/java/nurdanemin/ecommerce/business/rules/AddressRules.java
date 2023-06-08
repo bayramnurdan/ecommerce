@@ -16,7 +16,6 @@ public class AddressRules {
             return true;
         }
         return false;
-
     }
 
 

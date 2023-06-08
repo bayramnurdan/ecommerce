@@ -23,5 +23,8 @@ public class Messages {
         public static final String NotExists = "PRODUCT_DOES_NOT_EXIST";
         public static final String Exists = "PRODUCT_ALREADY_EXISTS";
     }
+    public static class Shipping{
+        public static final String TOO_LATE = "TOO_LATE_TO_UPDATE_SHIPPING";
+    }
 
 }

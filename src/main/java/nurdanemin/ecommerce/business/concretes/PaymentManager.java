@@ -21,7 +21,9 @@ public class PaymentManager implements PaymentService {
     private final PaymentRules rules;
     @Override
     public List<GetAllPaymentsResponse> getAll() {
-        return null;
+        return repository.findAll().stream()
+                .map(payment -> mapper.map(payment, GetAllPaymentsResponse.class))
+                .toList();
     }
 
     @Override

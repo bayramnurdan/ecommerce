@@ -63,13 +63,10 @@ public class OrderManager implements OrderService {
         Payment payment = paymentService.createPayment(request.getPaymentRequest());
         order.setPayment(payment);
 
-
         Shipping shipping = shippingService.createShipping(request.getShippingRequest());
         order.setShipping(shipping);
 
-
         Order orderCreated = repository.save(order);
-
 
         shipping.setOrder(orderCreated);
         shippingService.updateShipping(shipping.getId(), mapper.map(shipping, UpdateShippingRequest.class));
@@ -83,22 +80,15 @@ public class OrderManager implements OrderService {
         repository.save(orderCreated);
         setOrderForOrderItems(orderItems, orderCreated);
 
-
         CreateOrderResponse response = mapper.map(orderCreated, CreateOrderResponse.class);
         response.setOrderItemIds(getOrderItemIdsAsList(orderCreated));
         return response;
     }
 
-
-
-
-
-
     @Override
     public void delete(Long id) {
         Order order = repository.findById(id).orElseThrow();
         orderItemRepository.deleteAll(order.getOrderItems());
-
         repository.deleteById(id);
     }
 
@@ -136,7 +126,7 @@ public class OrderManager implements OrderService {
     public List<OrderItem> mapCartItemsToOrderItems(Cart cart){
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cart.getCartItems()) {
-
+            OrderItem orderItem = mapper.map(cartItem, OrderItem.class);
             productService.updateProductQuantity(cartItem.getProduct().getId(), -1 * cartItem.getQuantity());
             orderItems.add(orderItem);
         }

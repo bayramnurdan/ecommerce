@@ -50,7 +50,6 @@ public class UserManager  implements UserService {
         GetUserResponse response = mapper.map(user, GetUserResponse.class);
         response.setAddressIds(getUsersAddressesAsList(user));
         response.setCartId(user.getCart().getId());
-
         return response;
     }
 
@@ -127,14 +126,11 @@ public class UserManager  implements UserService {
         addressService.updateOwnersOfAddress(addressId, user);
     }
 
-
     @Override
     public void delete(Long id) {
         rules.checkIfExistsById(id);
         repository.deleteById(id);
     }
-
-
 
     public List<Long> getUsersAddressesAsList(User user){
         List<Long> addressIds = new ArrayList<>();

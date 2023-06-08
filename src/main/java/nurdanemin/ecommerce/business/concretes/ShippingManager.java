@@ -8,6 +8,7 @@ import nurdanemin.ecommerce.business.dto.request.update.shipping.UpdateShippingR
 import nurdanemin.ecommerce.business.dto.response.get.shipping.GetAllShippingsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.shipping.GetShippingResponse;
 import nurdanemin.ecommerce.business.dto.response.update.shipping.UpdateShippingResponse;
+import nurdanemin.ecommerce.common.constants.Messages;
 import nurdanemin.ecommerce.entities.Shipping;
 import nurdanemin.ecommerce.entities.enums.ShippingStatus;
 import nurdanemin.ecommerce.repositories.ShippingRepository;
@@ -50,7 +51,7 @@ public class ShippingManager  implements ShippingService {
     public UpdateShippingResponse updateShipping(Long id, UpdateShippingRequest request) {
         Shipping shipping = repository.findById(id).orElseThrow();
         if (!shipping.getStatus().equals(ShippingStatus.BEINGPREPARED)){
-            throw new RuntimeException("It is too late to update shipping info");
+            throw new RuntimeException(Messages.Shipping.TOO_LATE);
 
         }
         shipping.setReceiversFirstName(request.getReceiversfirstName());

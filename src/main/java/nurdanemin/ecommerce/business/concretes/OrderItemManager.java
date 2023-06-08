@@ -16,7 +16,10 @@ public class OrderItemManager implements OrderItemService {
     private final ModelMapper mapper;
     @Override
     public List<GetAllOrderItemsResponse> getAll() {
-        return null;
+        return repository.findAll()
+                .stream()
+                .map(orderItem -> mapper.map(orderItem, GetAllOrderItemsResponse.class))
+                .toList();
     }
 
     @Override
