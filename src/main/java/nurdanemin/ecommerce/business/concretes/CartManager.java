@@ -29,11 +29,10 @@ public class CartManager implements CartService {
     @Override
     public List<GetAllCartsResponse> getAll() {
         List<Cart> carts = repository.findAll();
-        List<GetAllCartsResponse> response = carts
+        return carts
                 .stream()
                 .map(cart -> mapper.map(cart, GetAllCartsResponse.class))
                 .toList();
-        return response;
     }
 
     @Override
@@ -47,8 +46,7 @@ public class CartManager implements CartService {
 
     @Override
     public Cart getCartById(Long id) {
-        Cart cart = repository.findById(id).orElseThrow();
-        return cart;
+        return repository.findById(id).orElseThrow();
     }
 
     @Override
@@ -58,7 +56,6 @@ public class CartManager implements CartService {
         return repository.save(cart);
     }
 
-
     @Override
     public void delete(Long id) {
         repository.deleteById(id);
@@ -67,15 +64,15 @@ public class CartManager implements CartService {
 
     @Override
     public void emptyCart(Long cartId) {
-            Cart cart = repository.findById(cartId).orElseThrow();
-            List<CartItem> cartItems= cart.getCartItems();
-            for (int i=0; i<cartItems.size(); i++){
-                cartItems.get(i).setCart(null);
-                cartItems.remove(cartItems.get(i));
+        Cart cart = repository.findById(cartId).orElseThrow();
+        List<CartItem> cartItems= cart.getCartItems();
+        for (int i=0; i<cartItems.size(); i++){
+            cartItems.get(i).setCart(null);
+            cartItems.remove(cartItems.get(i));
             }
-            cart.setCartItems(cartItems);
-            cart.setTotalPrice(0);
-            repository.save(cart);
+        cart.setCartItems(cartItems);
+        cart.setTotalPrice(0);
+        repository.save(cart);
     }
 
     @Override
@@ -93,15 +90,14 @@ public class CartManager implements CartService {
 
     @Override
     public GetCartResponse deleteItemFromCart(Long cartId, Long cartItemId) {
-    Cart cart = repository.findById(cartId).orElseThrow();
-    List<CartItem> cartItems = cart.getCartItems();
-    CartItem cartItem = cartItemService.getCartItemById(cartId);
-    cartItems.remove(cartItem);
-    cartItem.setCart(null);
-    Cart cartSaved = repository.save(cart);
-    setCartTotalPrice(cartSaved.getId());
-    return getById(cartId);
-
+        Cart cart = repository.findById(cartId).orElseThrow();
+        List<CartItem> cartItems = cart.getCartItems();
+        CartItem cartItem = cartItemService.getCartItemById(cartId);
+        cartItems.remove(cartItem);
+        cartItem.setCart(null);
+        Cart cartSaved = repository.save(cart);
+        setCartTotalPrice(cartSaved.getId());
+        return getById(cartId);
     }
 
     @Override
@@ -116,12 +112,10 @@ public class CartManager implements CartService {
     public Set<Long> mapCartItemIdsAsList(Cart cart){
         Set<Long> cartItemIds = new HashSet<>();
         for (CartItem cartItem:cart.getCartItems()){
-           Long id = cartItem.getId();
+            Long id = cartItem.getId();
             cartItemIds.add(id);
-
         }
         return cartItemIds;
-
     }
 
     public void setCartTotalPrice(Long cartId){

@@ -35,11 +35,10 @@ public class OrderManager implements OrderService {
     @Override
     public List<GetAllOrdersResponse> getAll() {
         List<Order> orders= repository.findAll();
-        List<GetAllOrdersResponse> response = orders
+        return orders
                 .stream()
                 .map(order -> mapper.map(order, GetAllOrdersResponse.class))
                 .toList();
-        return response;
     }
 
     @Override
@@ -85,9 +84,7 @@ public class OrderManager implements OrderService {
         setOrderForOrderItems(orderItems, orderCreated);
 
 
-
-
-       CreateOrderResponse response = mapper.map(orderCreated, CreateOrderResponse.class);
+        CreateOrderResponse response = mapper.map(orderCreated, CreateOrderResponse.class);
         response.setOrderItemIds(getOrderItemIdsAsList(orderCreated));
         return response;
     }
@@ -100,9 +97,7 @@ public class OrderManager implements OrderService {
     @Override
     public void delete(Long id) {
         Order order = repository.findById(id).orElseThrow();
-        for (OrderItem orderItem:order.getOrderItems()){
-            orderItemRepository.delete(orderItem);
-        }
+        orderItemRepository.deleteAll(order.getOrderItems());
 
         repository.deleteById(id);
     }
@@ -117,7 +112,6 @@ public class OrderManager implements OrderService {
                 GetAllOrdersResponse ordersResponse = mapper.map(order, GetAllOrdersResponse.class);
                 response.add(ordersResponse);
             }
-
         }
         return response;
     }
@@ -142,12 +136,7 @@ public class OrderManager implements OrderService {
     public List<OrderItem> mapCartItemsToOrderItems(Cart cart){
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cart.getCartItems()) {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProduct(cartItem.getProduct());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setPrice(cartItem.getPrice());
-            orderItem.setDiscount(cartItem.getDiscount());
-            orderItemRepository.save(orderItem);
+
             productService.updateProductQuantity(cartItem.getProduct().getId(), -1 * cartItem.getQuantity());
             orderItems.add(orderItem);
         }

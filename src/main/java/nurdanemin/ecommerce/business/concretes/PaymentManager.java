@@ -3,11 +3,8 @@ package nurdanemin.ecommerce.business.concretes;
 import lombok.AllArgsConstructor;
 import nurdanemin.ecommerce.business.abstracts.PaymentService;
 import nurdanemin.ecommerce.business.dto.request.create.payment.CreatePaymentRequest;
-import nurdanemin.ecommerce.business.dto.request.update.payment.UpdatePaymentRequest;
-import nurdanemin.ecommerce.business.dto.response.create.payment.CreatePaymentResponse;
 import nurdanemin.ecommerce.business.dto.response.get.payment.GetAllPaymentsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.payment.GetPaymentResponse;
-import nurdanemin.ecommerce.business.dto.response.update.payment.UpdatePaymentResponse;
 import nurdanemin.ecommerce.business.rules.PaymentRules;
 import nurdanemin.ecommerce.entities.Payment;
 import nurdanemin.ecommerce.entities.enums.PaymentStatus;
@@ -30,16 +27,14 @@ public class PaymentManager implements PaymentService {
     @Override
     public GetPaymentResponse getById(Long id) {
         Payment payment = repository.findById(id).orElseThrow();
-        GetPaymentResponse response = mapper.map(payment, GetPaymentResponse.class);
-        return response;
+        return mapper.map(payment, GetPaymentResponse.class);
     }
 
     @Override
     public Payment createPayment(CreatePaymentRequest request) {
         Payment payment = mapper.map(request, Payment.class);
         payment.setStatus(PaymentStatus.FAILED);
-        Payment paymentCreated = repository.save(payment);
-        return paymentCreated;
+        return repository.save(payment);
 
     }
     public void processPayment(Payment payment){
@@ -49,9 +44,6 @@ public class PaymentManager implements PaymentService {
         payment.setStatus(PaymentStatus.SUCCESS);
         repository.save(payment);
     }
-
-
-
 
     @Override
     public void delete(Long id) {

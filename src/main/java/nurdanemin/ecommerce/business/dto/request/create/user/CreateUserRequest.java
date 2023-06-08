@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nurdanemin.ecommerce.business.dto.request.create.address.CreateAddressRequest;
-import nurdanemin.ecommerce.entities.Address;
 
 @AllArgsConstructor
 @NoArgsConstructor

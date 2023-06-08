@@ -26,42 +26,37 @@ public class AddressManager implements AddressService {
     @Override
     public List<GetAllAddressesResponse> getAll() {
         List<Address> addresses = repository.findAll();
-        List<GetAllAddressesResponse> response = addresses
+        return addresses
                 .stream()
                 .map(address-> mapper.map(address, GetAllAddressesResponse.class))
                 .toList();
-        return response;
     }
 
     @Override
     public GetAddressResponse getById(Long id) {
         rules.checkIfExistsById(id);
         Address address = repository.findById(id).orElseThrow();
-        GetAddressResponse response = mapper.map(address, GetAddressResponse.class);
-        return response;
+        return mapper.map(address, GetAddressResponse.class);
     }
 
     @Override
     public Address getAddressById(Long id) {
         rules.checkIfExistsById(id);
-        Address address = repository.findById(id).orElseThrow();
-        return address;
+        return repository.findById(id).orElseThrow();
     }
 
     @Override
     public Address createAddress(CreateAddressRequest request) {
         if (rules.checkIfAddressExists(request.getApartmentNumber(), request.getBuilding(), request.getStreet(),
                 request.getDistrict(), request.getCity(), request.getCountry())){
-            Address address= repository.findByApartmentNumberAndBuildingAndStreetAndDistrictAndCityAndCountry(
+            return repository.findByApartmentNumberAndBuildingAndStreetAndDistrictAndCityAndCountry(
                     request.getApartmentNumber(), request.getBuilding(), request.getStreet(),
                     request.getDistrict(), request.getCity(), request.getCountry());
-            return address;
         }
 
         Address address = mapper.map(request, Address.class);
         address.setUsers(new ArrayList<>());
-        Address createdAddress = repository.save(address);
-        return createdAddress;
+        return repository.save(address);
     }
 
     @Override

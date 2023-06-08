@@ -24,25 +24,22 @@ public class BrandManager implements BrandService {
     @Override
     public List<GetAllBrandsResponse> getAll() {
         List<Brand> brands  = repository.findAll();
-        List<GetAllBrandsResponse> response = brands
+        return brands
                 .stream()
                 .map(brand->mapper.map(brand, GetAllBrandsResponse.class))
                 .toList();
-        return response;
     }
 
     @Override
     public GetBrandResponse getById(Long id) {
         rules.checkIfBrandExistsById(id);
-        GetBrandResponse response = mapper.map(repository.findById(id), GetBrandResponse.class);
-        return response;
+        return mapper.map(repository.findById(id), GetBrandResponse.class);
     }
 
     @Override
     public Brand getBrandById(Long id) {
         rules.checkIfBrandExistsById(id);
-        Brand brand = repository.findById(id).orElseThrow();
-        return brand;
+        return repository.findById(id).orElseThrow();
     }
 
     @Override
@@ -51,8 +48,7 @@ public class BrandManager implements BrandService {
         Brand brand = mapper.map(request, Brand.class);
         brand.setId(0L);
         Brand createdBrand =  repository.save(brand);
-        CreateBrandResponse response = mapper.map(createdBrand, CreateBrandResponse.class);
-        return response;
+        return mapper.map(createdBrand, CreateBrandResponse.class);
     }
 
 
@@ -62,8 +58,7 @@ public class BrandManager implements BrandService {
         Brand brand = mapper.map(request, Brand.class);
         brand.setId(id);
         Brand updatedBrand =  repository.save(brand);
-        UpdateBrandResponse response = mapper.map(updatedBrand, UpdateBrandResponse.class);
-        return response;
+        return mapper.map(updatedBrand, UpdateBrandResponse.class);
     }
 
 

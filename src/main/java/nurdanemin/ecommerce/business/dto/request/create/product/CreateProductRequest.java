@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nurdanemin.ecommerce.entities.Category;
-import nurdanemin.ecommerce.entities.Product;
 
 import java.util.Set;
 

@@ -36,11 +36,10 @@ public class UserManager  implements UserService {
     @Override
     public List<GetAllUsersResponse> getAll() {
         List<User> users = repository.findAll();
-        List<GetAllUsersResponse> response = users
+        return users
                 .stream()
                 .map(user -> mapper.map(user, GetAllUsersResponse.class))
                 .toList();
-        return response;
     }
 
     @Override
@@ -58,8 +57,7 @@ public class UserManager  implements UserService {
     @Override
     public User getUserById(Long id) {
         rules.checkIfExistsById(id);
-       User user = repository.findById(id).orElseThrow();
-       return user;
+        return repository.findById(id).orElseThrow();
     }
 
     @Override
@@ -99,8 +97,7 @@ public class UserManager  implements UserService {
 
         User user = mapper.map(request, User.class);
         User createdUser = repository.save(user);
-        UpdateUserResponse response = mapper.map(createdUser, UpdateUserResponse.class);
-        return response;
+        return mapper.map(createdUser, UpdateUserResponse.class);
     }
 
     @Override
@@ -131,7 +128,6 @@ public class UserManager  implements UserService {
     }
 
 
-
     @Override
     public void delete(Long id) {
         rules.checkIfExistsById(id);
@@ -144,7 +140,7 @@ public class UserManager  implements UserService {
         List<Long> addressIds = new ArrayList<>();
         List<Address> userAddresses = user.getAddresses();
         for (Address address : userAddresses){
-           addressIds.add(address.getId());
+            addressIds.add(address.getId());
         }
         return addressIds;
 

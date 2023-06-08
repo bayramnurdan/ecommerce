@@ -26,27 +26,25 @@ public class CategoryManager  implements CategoryService {
     @Override
     public List<GetAllCategoriesResponse> getAll() {
         List<Category>  categories = repository.findAll();
-        List<GetAllCategoriesResponse> response = categories
+        return categories
                 .stream()
                 .map(category -> mapper.map(category, GetAllCategoriesResponse.class))
                 .toList();
-        return  response;
     }
 
     @Override
     public GetCategoryResponse getById(Long id) {
         rules.checkIfCategoryExistsById(id);
-        GetCategoryResponse response = mapper.map(repository.findById(id), GetCategoryResponse.class);
-        return response;
+        return mapper.map(repository.findById(id), GetCategoryResponse.class);
     }
 
     @Override
     public CreateCategoryResponse createCategory(CreateCategoryRequest request) {
         rules.checkIfCategoryAlreadyExists(request.getName());
-       Category category = mapper.map(request, Category.class);
-       Category createdCategory = repository.save(category);
-       CreateCategoryResponse response = mapper.map(createdCategory, CreateCategoryResponse.class);
-       return response;
+        Category category = mapper.map(request, Category.class);
+        Category createdCategory = repository.save(category);
+        CreateCategoryResponse response = mapper.map(createdCategory, CreateCategoryResponse.class);
+        return response;
     }
 
     @Override
@@ -58,7 +56,6 @@ public class CategoryManager  implements CategoryService {
         UpdateCategoryResponse response = mapper.map(updatedCategory, UpdateCategoryResponse.class);
         return response;
     }
-
 
     @Override
     public void delete(Long id) {

@@ -7,20 +7,17 @@ import nurdanemin.ecommerce.business.abstracts.ProductService;
 import nurdanemin.ecommerce.business.dto.request.create.product.CreateProductRequest;
 import nurdanemin.ecommerce.business.dto.request.update.product.UpdateProductRequest;
 import nurdanemin.ecommerce.business.dto.response.create.product.CreateProductResponse;
-import nurdanemin.ecommerce.business.dto.response.get.address.GetAllAddressesResponse;
 import nurdanemin.ecommerce.business.dto.response.get.product.GetAllProductsResponse;
 import nurdanemin.ecommerce.business.dto.response.get.product.GetProductResponse;
 import nurdanemin.ecommerce.business.dto.response.update.product.UpdateProductResponse;
 import nurdanemin.ecommerce.business.rules.ProductRules;
 import nurdanemin.ecommerce.entities.Category;
 import nurdanemin.ecommerce.entities.Product;
-import nurdanemin.ecommerce.repositories.CategoryRepository;
 import nurdanemin.ecommerce.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,18 +34,16 @@ public class ProductManager  implements ProductService {
     @Override
     public List<GetAllProductsResponse> getAll() {
         List<Product> products = repository.findAll();
-        List<GetAllProductsResponse> reponse = products
+        return products
                 .stream()
                 .map(product-> mapper.map(product, GetAllProductsResponse.class))
                 .toList();
-        return reponse;
     }
 
     @Override
     public GetProductResponse getById(Long id) {
         rules.checkIfProductExistsById(id);
-        GetProductResponse response =  mapper.map(repository.findById(id), GetProductResponse.class);
-        return response;
+        return mapper.map(repository.findById(id), GetProductResponse.class);
     }
 
     public List<GetAllProductsResponse> getAllByCategoryName(String categoryName) {
@@ -60,11 +55,10 @@ public class ProductManager  implements ProductService {
                 }
             }
         }
-        List<GetAllProductsResponse> response = products
+        return products
                 .stream()
                 .map(product -> mapper.map(product, GetAllProductsResponse.class))
                 .toList();
-        return response;
     }
 
     @Override
@@ -75,18 +69,16 @@ public class ProductManager  implements ProductService {
                     products.add(product);
             }
         }
-        List<GetAllProductsResponse> response = products
+        return products
                 .stream()
                 .map(product -> mapper.map(product, GetAllProductsResponse.class))
                 .toList();
-        return response;
 
     }
 
     @Override
     public Product getProductbyId(Long id) {
-        Product product = repository.findById(id).orElseThrow();
-        return product;
+        return repository.findById(id).orElseThrow();
     }
 
 
@@ -96,16 +88,16 @@ public class ProductManager  implements ProductService {
         Product product = mapper.map(request, Product.class);
         product.setBrand(brandService.getBrandById(request.getBrandId()));
         product.setCategories(new ArrayList<>());
-        if(request.getCategoryNames().size() !=0){
-           setCategories(product, request.getCategoryNames());
-       }
-       product.setId(0L);
-       Product createdProd = repository.save(product);
-       CreateProductResponse response = mapper.map(createdProd, CreateProductResponse.class);
-       response.setCategoryNames(mapProductCategoriesAsNamesList(createdProd));
-       response.setBrandName(createdProd.getBrand().getName());
+        if(!request.getCategoryNames().isEmpty()){
+            setCategories(product, request.getCategoryNames());}
 
-       return response;
+        product.setId(0L);
+        Product createdProd = repository.save(product);
+        CreateProductResponse response = mapper.map(createdProd, CreateProductResponse.class);
+        response.setCategoryNames(mapProductCategoriesAsNamesList(createdProd));
+        response.setBrandName(createdProd.getBrand().getName());
+
+        return response;
     }
 
     @Override
@@ -114,8 +106,7 @@ public class ProductManager  implements ProductService {
         Product product = repository.findById(id).orElseThrow();
         product.setQuantity(request.getQuantity());
         Product createdProd = repository.save(product);
-        UpdateProductResponse response = mapper.map(createdProd, UpdateProductResponse.class);
-        return response;
+        return mapper.map(createdProd, UpdateProductResponse.class);
     }
 
 

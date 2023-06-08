@@ -15,8 +15,8 @@ public class CreateShippingResponse {
     private Long id;
 
 
-    private String receiversfirstName;
-    private String receiverslastName;
+    private String receiversFirstName;
+    private String receiversLastName;
 
 
     private Long addressId;

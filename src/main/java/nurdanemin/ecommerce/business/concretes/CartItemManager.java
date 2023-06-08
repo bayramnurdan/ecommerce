@@ -20,24 +20,19 @@ public class CartItemManager implements CartItemService {
     private final CartItemRepository repository;
     private final ProductService productService;
 
-
-
     @Override
     public List<GetAllCartItemsResponse> getAll() {
         List<CartItem> cartItems = repository.findAll();
-        List<GetAllCartItemsResponse> response = cartItems
+        return cartItems
                 .stream()
                 .map(cartItem -> mapper.map(cartItem, GetAllCartItemsResponse.class))
                 .toList();
-        return response;
     }
 
 
     @Override
     public CartItem getCartItemById(Long id) {
-
-        CartItem cartItem = repository.findById(id).orElseThrow();
-        return cartItem;
+        return repository.findById(id).orElseThrow();
     }
 
 
@@ -45,7 +40,6 @@ public class CartItemManager implements CartItemService {
     @Override
     public void delete(Long id) {
         repository.deleteById(id);
-
     }
 
     @Override
@@ -56,8 +50,7 @@ public class CartItemManager implements CartItemService {
         cartItem.setDiscount(request.getDiscount());
         cartItem.setQuantity(request.getQuantity());
         cartItem.setPrice(product.getPrice());
-        CartItem cartItemCreated = repository.save(cartItem);
-        return cartItemCreated;
+        return repository.save(cartItem);
     }
 
     @Override
