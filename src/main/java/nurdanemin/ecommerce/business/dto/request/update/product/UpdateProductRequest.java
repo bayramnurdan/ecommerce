@@ -1,5 +1,7 @@
 package nurdanemin.ecommerce.business.dto.request.update.product;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,4 +18,8 @@ public class UpdateProductRequest {
     private Long quantity;
     private double price;
     private double discount;
+    @Min(10)
+    private String description;
+    @NotBlank
+    private String imageUrl;
 }

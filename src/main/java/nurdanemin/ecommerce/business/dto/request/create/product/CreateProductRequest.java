@@ -25,5 +25,9 @@ public class CreateProductRequest {
     @Min(1)
     private double price;
     private double discount;
+    @Min(10)
+    private String description;
+    @NotBlank
+    private String imageUrl;
 
 }

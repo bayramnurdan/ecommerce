@@ -23,6 +23,8 @@ public class Product {
     private Long quantity;
     private double price;
     private double discount;
+    private String description;
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "brand_id")
