@@ -15,11 +15,14 @@ import nurdanemin.ecommerce.entities.Category;
 import nurdanemin.ecommerce.entities.Product;
 import nurdanemin.ecommerce.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -32,8 +35,9 @@ public class ProductManager  implements ProductService {
     private final BrandService brandService;
 
     @Override
-    public List<GetAllProductsResponse> getAll() {
-        List<Product> products = repository.findAll();
+    public List<GetAllProductsResponse> getAll(Integer pageNo, Integer pageSize) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Order.asc("name")));
+        Page<Product> products = repository.findAll(paging);
         return products
                 .stream()
                 .map(product-> mapper.map(product, GetAllProductsResponse.class))
@@ -46,9 +50,10 @@ public class ProductManager  implements ProductService {
         return mapper.map(repository.findById(id), GetProductResponse.class);
     }
 
-    public List<GetAllProductsResponse> getAllByCategoryName(String categoryName) {
+    public List<GetAllProductsResponse> getAllByCategoryName(String categoryName, Integer pageNo, Integer pageSize) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Order.asc("name")));
         List<Product> products = new ArrayList<>();
-        for (Product product : repository.findAll()){
+        for (Product product : repository.findAll(paging)){
             for (Category category :product.getCategories()){
                 if (category.getName().equalsIgnoreCase(categoryName)){
                     products.add(product);
@@ -59,6 +64,14 @@ public class ProductManager  implements ProductService {
                 .stream()
                 .map(product -> mapper.map(product, GetAllProductsResponse.class))
                 .toList();
+    }
+
+    @Override
+    public List<GetAllProductsResponse> getAllByName(String name) {
+        return repository.findAllByNameContainingIgnoreCase(name)
+                .stream()
+                .map(product -> mapper.map(product, GetAllProductsResponse.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -77,7 +90,7 @@ public class ProductManager  implements ProductService {
     }
 
     @Override
-    public Product getProductbyId(Long id) {
+    public Product getProductById(Long id) {
         return repository.findById(id).orElseThrow();
     }
 

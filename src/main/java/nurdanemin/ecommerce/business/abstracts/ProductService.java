@@ -12,11 +12,12 @@ import nurdanemin.ecommerce.entities.Product;
 import java.util.List;
 
 public interface ProductService {
-    List<GetAllProductsResponse> getAll();
+    List<GetAllProductsResponse> getAll(Integer pageNo, Integer pageSize);
     GetProductResponse getById(Long id);
-    List<GetAllProductsResponse> getAllByCategoryName(String categoryName);
+    List<GetAllProductsResponse> getAllByCategoryName(String categoryName, Integer pageNo, Integer pageSize);
+    List<GetAllProductsResponse> getAllByName(String name);
     List<GetAllProductsResponse> getAllByBrandName(String brandName);
-    Product getProductbyId(Long id);
+    Product getProductById(Long id);
 
     CreateProductResponse createProduct(CreateProductRequest request);
     UpdateProductResponse updateProduct(Long id, UpdateProductRequest request);

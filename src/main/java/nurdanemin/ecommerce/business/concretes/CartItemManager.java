@@ -45,7 +45,7 @@ public class CartItemManager implements CartItemService {
     @Override
     public CartItem createCartItem(CreateCartItemRequest request) {
         CartItem cartItem = new CartItem();
-        Product product = productService.getProductbyId(request.getProductId());
+        Product product = productService.getProductById(request.getProductId());
         cartItem.setProduct(product);
         cartItem.setDiscount(request.getDiscount());
         cartItem.setQuantity(request.getQuantity());

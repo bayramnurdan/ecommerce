@@ -22,8 +22,8 @@ public class ProductsController {
 
 
     @GetMapping
-    public List<GetAllProductsResponse> getAll(){
-        return service.getAll();
+    public List<GetAllProductsResponse> getAll(@RequestParam Integer page, @RequestParam Integer size){
+        return service.getAll(page, size);
     }
 
     @GetMapping("/{id}")
@@ -31,9 +31,15 @@ public class ProductsController {
         return service.getById(id);
 
     }
-    @GetMapping("/get-by-category/{categoryName}")
-    public List<GetAllProductsResponse> getAllByCategoryName(@PathVariable String categoryName) {
-        return service.getAllByCategoryName(categoryName);
+    @GetMapping("/category/{categoryName}")
+    public List<GetAllProductsResponse> getAllByCategoryName(@PathVariable String categoryName, @RequestParam  Integer pageNo, @RequestParam Integer pageSize) {
+        return service.getAllByCategoryName(categoryName, pageNo, pageSize);
+
+    }
+
+    @GetMapping("/name/{prodName}")
+    public List<GetAllProductsResponse> getAllByName(@PathVariable String prodName) {
+        return service.getAllByName(prodName);
 
     }
     @GetMapping("/get-by-brand/{brandName}")
